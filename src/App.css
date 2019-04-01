@@ -8,6 +8,21 @@ body {
   font-family: Cantarell;
 }
 
+/* in the navigator */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotateY(0deg); }
+  /* 50% { -webkit-transform: rotateY(180deg); } */
+  100% { -webkit-transform: rotateY(360deg); }
+}
+
+.fa-wikipedia-w {
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 12000ms;
+  /* -webkit-transform-origin:50% 50%; */
+  -webkit-animation-iteration-count: infinite; /* The magic keyword for infinite*/
+  -webkit-animation-timing-function: cubic-bezier(0.075, 0.885, 0.05, 1);
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
@@ -16,6 +31,12 @@ input:-webkit-autofill:active  {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
+.nav-title {
+  font-family: Quicksand;
+}
+
+/*  */
+
 .link {
   transition: all 0.3s ease;
   /* background-color: rbga(0,0,0,0.8); */
@@ -23,7 +44,7 @@ input:-webkit-autofill:active  {
 }
 
 .link:hover {
-  color:rgb(11, 159, 185);
+  color:rgb(132, 142, 158);
   transform: translate(-5px);
   
 }

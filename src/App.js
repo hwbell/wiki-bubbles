@@ -6,6 +6,7 @@ import posed from 'react-pose';
 
 // components
 import SearchPage from './components/SearchPage';
+import Navigator from './components/Navigator';
 
 class App extends Component {
 
@@ -20,11 +21,11 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <div className="body-bg">
-
-        </div>
+        
+        <Navigator/>
 
         <SearchPage/>
+      
       </div>
     );
   }

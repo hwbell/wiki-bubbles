@@ -194,7 +194,9 @@ export default SearchPage;
 
 const styles = {
   container: {
-    marginTop: 100
+    margin: '3vw',
+    marginTop: 50,
+    backgroundColor: 'rgba(255,255,255,0.7)'
   },
   input: {
     // border: '1px solid black'
