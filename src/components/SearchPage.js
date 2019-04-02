@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 // components 
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import ModalButton from './ModalButton';
-import PieGraph from './PieChart';
-import { ColumnChart } from 'react-chartkick';
 
 // styling
 import '../App.css';
@@ -12,6 +10,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 // animation
 import posed from 'react-pose';
+
+// chartkick charts
+import ReactChartkick, { ColumnChart, BarChart } from 'react-chartkick';
+import Chart from 'chart.js';
+ReactChartkick.addAdapter(Chart);
 
 const fetch = require('node-fetch');
 
@@ -47,11 +50,15 @@ class SearchPage extends Component {
     // get today into the format for the url -- 2015100100 = 10/01/2015. We'll leave the hours as 00.
     const today = new Date();
 
+    // do yesterday since they don't have data yet for today
+    today.setDate(today.getDate()-1);
+
     // have to correct the month by 1 since it is 0-indexed
     let month = today.getMonth() + 1;
     let monthStr = month < 10 ? '0' + month.toString() : month.toString();
 
-    let date = today.getDate() - 1; // do yesterday since they don't have data yet for today
+    let date = today.getDate(); 
+    
     let yesterday = date < 10 ? '0' + date.toString() : date.toString();
     let year = today.getFullYear().toString();
 
@@ -59,13 +66,18 @@ class SearchPage extends Component {
     // cors-anywhere.git project
     const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
     const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/2019/${monthStr}/${yesterday}`;
-    fetch(proxyUrl+searchUrl)
-      // .then(res => res.json)
+    console.log(searchUrl)
+
+    fetch(searchUrl, {
+      method: 'GET',
+      crossDomain: true
+    })
+      .then(res => res.json())
       .then((json) => {
         console.log(json);
 
-        // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 20
-        let topArticles = json.items[0].articles.slice(2, 22);
+        // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 10
+        let topArticles = json.items[0].articles.slice(2, 12);
         let formattedArticles = topArticles.map((article) => {
           return [article.article, article.views]
         })
@@ -94,10 +106,7 @@ class SearchPage extends Component {
       .then((json) => {
         console.log(json)
 
-        // now format the data for the graph, like this:
-        // { label: 'label', value: 1-10 } - this for each search result.
-        // the value will be between 1-10
-
+        // now format the data for the graph
         let data = Object.keys(json.query.pages).map((index, i) => {
 
           let extract = json.query.pages[`${index}`].extract;
@@ -105,6 +114,7 @@ class SearchPage extends Component {
           let value = json.query.pages[`${index}`].index;
 
           return (
+            // from the chartkick docs, this should be the format for each group
             [title, value]
           )
         });
@@ -156,11 +166,6 @@ class SearchPage extends Component {
           </Button>
         </Form>
 
-        {/* <PieGraph data={this.state.data} /> */}
-
-        {this.state.topArticles && <ColumnChart data={this.state.topArticles} />}
-
-
         {this.state.pages &&
           Object.keys(this.state.pages).map((index, i) => {
 
@@ -183,6 +188,7 @@ class SearchPage extends Component {
             )
           })}
 
+          {this.state.topArticles && <BarChart ticks={4} data={this.state.topArticles}/>}
 
 
       </div>
@@ -195,7 +201,7 @@ export default SearchPage;
 const styles = {
   container: {
     margin: '3vw',
-    marginTop: 50,
+    marginTop: 100,
     backgroundColor: 'rgba(255,255,255,0.7)'
   },
   input: {

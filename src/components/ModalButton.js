@@ -135,15 +135,23 @@ class ModalButton extends React.Component {
 
           {this.state.slides &&
             <ModalBody>
+              
               <Carousel
                 activeIndex={activeIndex}
                 next={this.next}
                 previous={this.previous}
               >
-                <CarouselIndicators items={this.state.items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
+                <CarouselIndicators 
+                  style={{margin: '0px'}}
+                  items={this.state.items} 
+                  activeIndex={activeIndex} 
+                  onClickHandler={this.goToIndex} />
+
                 {this.state.slides}
+
                 <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
                 <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
+              
               </Carousel>
             </ModalBody>}
 

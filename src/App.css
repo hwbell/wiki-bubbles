@@ -1,14 +1,20 @@
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
-@import url('https://fonts.googleapis.com/css?family=Cantarell');
+@import url('https://fonts.googleapis.com/css?family=Sarabun');
+@import url('https://fonts.googleapis.com/css?family=Duru+Sans');
 
 body {
   height: 800px;
   background: url('./assets/images/wiki-globe.jpeg') no-repeat;
   background-position: 80% 40%; 
-  font-family: Cantarell;
+  /* font-family: Quicksand; */
 }
 
 /* in the navigator */
+@keyframes spin {
+  0% { -webkit-transform: rotateY(0deg); }
+  /* 50% { -webkit-transform: rotateY(180deg); } */
+  100% { -webkit-transform: rotateY(360deg); }
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotateY(0deg); }
   /* 50% { -webkit-transform: rotateY(180deg); } */
@@ -16,10 +22,14 @@ body {
 }
 
 .fa-wikipedia-w {
+  animation-name: spin;
   -webkit-animation-name: spin;
+  animation-duration: 12000ms;
   -webkit-animation-duration: 12000ms;
   /* -webkit-transform-origin:50% 50%; */
+  animation-iteration-count: infinite; /* The magic keyword for infinite*/
   -webkit-animation-iteration-count: infinite; /* The magic keyword for infinite*/
+  animation-timing-function: cubic-bezier(0.075, 0.885, 0.05, 1);
   -webkit-animation-timing-function: cubic-bezier(0.075, 0.885, 0.05, 1);
 }
 
@@ -35,9 +45,19 @@ input:-webkit-autofill:active  {
   font-family: Quicksand;
 }
 
+.nav-link {
+  font-family: Quicksand;
+  transition: all 0.3s ease;
+  /* background-color: rbga(0,0,0,0.8); */
+  color: rgb(7, 100, 206);
+}
+.nav-link:hover {
+  color: rgb(132, 142, 158);
+}
 /*  */
 
 .link {
+  font-family: Sarabun;
   transition: all 0.3s ease;
   /* background-color: rbga(0,0,0,0.8); */
   color: rgb(7, 100, 206);
