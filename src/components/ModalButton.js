@@ -14,7 +14,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 // google image search
 const GoogleImages = require('google-images');
-const client = new GoogleImages('005753450858409485629:gp7oqzgoopw', 'AIzaSyDwIferyVthvOT_cF1yfNwXTeMt63YTURU');
+const client = new GoogleImages(process.env.REACT_APP_GOOGLE_CSE, process.env.REACT_APP_GOOGLE_KEY);
 
 class ModalButton extends React.Component {
   constructor(props) {
