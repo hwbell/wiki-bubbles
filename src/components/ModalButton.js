@@ -83,7 +83,7 @@ class ModalButton extends React.Component {
           const slides = items.map((item) => {
             return (
               <CarouselItem
-                className="carousel-image"
+                className="carousel-image col"
                 onExiting={this.onExiting}
                 onExited={this.onExited}
                 key={item.src}
@@ -160,7 +160,7 @@ class ModalButton extends React.Component {
               style={styles.button}>
               <a target="_blank"
                 href={`https://en.wikipedia.org/wiki/${this.props.title}`}>
-                read the full article</a>
+                Click to read the full article</a>
             </Button>
           </ModalFooter>
         </Modal>

@@ -1,11 +1,10 @@
 import React from 'react';
-import {
-  Button
-} from 'reactstrap';
 
 // styling
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+
+import AnchorLink from 'react-anchor-link-smooth-scroll'
 
 export default class Navigator extends React.Component {
   constructor(props) {
@@ -34,10 +33,10 @@ export default class Navigator extends React.Component {
             </div>
 
             <div style={styles.navLink} className="nav-link">
-              <p>Search</p>
+              <AnchorLink href="#search">Search</AnchorLink>
             </div>
             <div style={styles.navLink} className="nav-link">
-              <p>Top Hits</p>
+              <AnchorLink href="#tophits">Top Hits</AnchorLink>
             </div>
           </div>
 
@@ -50,7 +49,7 @@ export default class Navigator extends React.Component {
 const styles = {
   main: {
     width: '100%',
-    margin: '10px auto',
+    margin: '0px auto',
     backgroundColor: 'rgba(255,255,255,1)'
   },
   titleHolder: {

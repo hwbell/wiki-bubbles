@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // components 
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import ModalButton from './ModalButton';
+import TopHits from './TopHits';
 
 // styling
 import '../App.css';
@@ -10,11 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 // animation
 import posed from 'react-pose';
-
-// chartkick charts
-import ReactChartkick, { ColumnChart, BarChart } from 'react-chartkick';
-import Chart from 'chart.js';
-ReactChartkick.addAdapter(Chart);
+var Rainbow = require('rainbowvis.js');
 
 const fetch = require('node-fetch');
 
@@ -40,7 +37,7 @@ class SearchPage extends Component {
     this.getTopArticles();
   }
 
-  
+
 
   // // for the data in the initial graph
   getTopArticles() {
@@ -50,22 +47,22 @@ class SearchPage extends Component {
     // get today into the format for the url -- 2015100100 = 10/01/2015. We'll leave the hours as 00.
     const today = new Date();
 
-    // do yesterday since they don't have data yet for today
-    today.setDate(today.getDate()-1);
+    // do two days since they don't have data yet for today, and sometimes don't have it for yesterday either
+    today.setDate(today.getDate() - 2);
 
     // have to correct the month by 1 since it is 0-indexed
-    let month = today.getMonth() + 1;
-    let monthStr = month < 10 ? '0' + month.toString() : month.toString();
+    let monthNum = today.getMonth() + 1;
+    let month = monthNum < 10 ? '0' + monthNum.toString() : monthNum.toString();
 
-    let date = today.getDate(); 
-    
-    let yesterday = date < 10 ? '0' + date.toString() : date.toString();
+    let date = today.getDate();
+
+    let day = date < 10 ? '0' + date.toString() : date.toString();
     let year = today.getFullYear().toString();
 
     // a simple proxy is needed to avoid cors issues. I created one cloned from the 
     // cors-anywhere.git project
-    const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/2019/${monthStr}/${yesterday}`;
+    // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/${year}/${month}/${day}`;
     console.log(searchUrl)
 
     fetch(searchUrl, {
@@ -76,14 +73,51 @@ class SearchPage extends Component {
       .then((json) => {
         console.log(json);
 
-        // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 10
-        let topArticles = json.items[0].articles.slice(2, 12);
-        let formattedArticles = topArticles.map((article) => {
-          return [article.article, article.views]
-        })
+        // set up format for the google chart - from react-google-charts docs
+        let data = [
+          [
+            'Wiki Page',
+            'Views',
+            { role: 'style' },
+            {
+              sourceColumn: 0,
+              role: 'annotation',
+              type: 'string',
+              calc: 'stringify',
+            },
+          ]
+          // data groups added here as ['Title', value, '#hexcolor', null],
+        ]
+
+        // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
+        // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
+        let topArticles = json.items[0].articles.slice(2, 13);
+
+        // initalize rainbowvis to color each group dynamically
+        var myRainbow = new Rainbow();
+
+        // get min and max
+        let max = topArticles[0].views;
+        let min = topArticles[topArticles.length - 1].views;
+        console.log(typeof (min), typeof (max))
+
+        myRainbow.setNumberRange(min, max); // set range based on data
+        myRainbow.setSpectrum('#E1F5FE', '#F8BBD0');
+
+        topArticles.forEach((article, i) => {
+          let title = article.article.replace(/_/g, ' '); // make the _ into spaces
+          if (title !== 'Special:CreateAccount' && i < 10) {
+            let color = myRainbow.colourAt(article.views);
+            data.push([title, article.views, color, null]);
+          }
+
+        });
+
+        console.log(data)
 
         this.setState({
-          topArticles: formattedArticles
+          topArticles: data,
+          date: `${year}-${month}-${date}`
         })
 
       })
@@ -150,7 +184,7 @@ class SearchPage extends Component {
   render() {
 
     return (
-      <div className="container" style={styles.container}>
+      <div id="search" className="container" style={styles.container}>
 
         <Form className="row" style={styles.input} onSubmit={this.handleSubmit}>
           <FormGroup>
@@ -166,30 +200,56 @@ class SearchPage extends Component {
           </Button>
         </Form>
 
-        {this.state.pages &&
-          Object.keys(this.state.pages).map((index, i) => {
+        {this.state.pages && 
 
-            let extract = this.state.pages[`${index}`].extract;
-            let title = this.state.pages[`${index}`].title;
+          <div style={styles.searchResults}>
+            {Object.keys(this.state.pages).map((index, i) => {
 
-            return (
-              <div key={i} style={styles.result} className="row">
-                {/* <Button color="info">
-                  <p><strong>{title}</strong></p>
-                </Button>
+              let extract = this.state.pages[`${index}`].extract;
+              let title = this.state.pages[`${index}`].title;
 
-                <p>{extract}</p> */}
-                <ModalButton
-                  title={title}
-                  extract={extract}
-                />
+              return (
+                <div key={i} style={styles.result} className="row">
+                  {/* <Button color="info">
+                        <p><strong>{title}</strong></p>
+                      </Button>
 
-              </div>
-            )
-          })}
+                      <p>{extract}</p> */}
+                  <ModalButton
+                    date={this.state.date}
+                    title={title}
+                    extract={extract}
+                  />
 
-          {this.state.topArticles && <BarChart ticks={4} data={this.state.topArticles}/>}
+                </div>
+              )
+            })}
+          </div>
 
+        }
+
+        <hr id="tophits"></hr>
+
+        {this.state.topArticles && <TopHits date={this.state.date} data={this.state.topArticles} />}
+
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
+        <div>
+          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
+          </div>
 
       </div>
     );
@@ -200,8 +260,7 @@ export default SearchPage;
 
 const styles = {
   container: {
-    margin: '3vw',
-    marginTop: 100,
+    paddingTop: '100px',
     backgroundColor: 'rgba(255,255,255,0.7)'
   },
   input: {
@@ -224,6 +283,9 @@ const styles = {
   },
   icon: {
     fontSize: '22px'
+  },
+  searchResults: {
+    marginBottom: '40px'
   },
   result: {
     width: '100%'
