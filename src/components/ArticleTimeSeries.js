@@ -6,19 +6,35 @@ import { Chart } from 'react-google-charts';
 
 const fetch = require('node-fetch');
 
+// this function takes a javascript Date obj and returns it in the wikipages 
+// format - i.e. '2015100100' being 0ct 01, 2015, 0hrs
+const getSearchFormatDate = (dateObj) => {
+
+  // have to correct the month by 1 since it is 0-indexed
+  let monthNum = dateObj.getMonth() + 1;
+  let month = monthNum < 10 ? '0' + monthNum.toString() : monthNum.toString();
+
+  let date = dateObj.getDate();
+  let day = date < 10 ? '0' + date.toString() : date.toString();
+
+  let year = dateObj.getFullYear().toString();
+
+  return `${year}${month}${day}00`
+}
+
 export default class ArticleTimeSeries extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      
+      // 
     };
 
-    // this.toggle = this.toggle.bind(this);
+    this.getTimeSeriesData = this.getTimeSeriesData.bind(this);
   }
 
   componentDidMount() {
     // set the date range, using 2 days ago as the endpoint
-    
+
     // set the endpoint
     let endDate = new Date();
     endDate.setDate(endDate.getDate() - 2);
@@ -27,35 +43,34 @@ export default class ArticleTimeSeries extends React.Component {
     let startDate = new Date(endDate.getTime()); // copy the original
     startDate.setDate(endDate.getDate() - 30); // set the date to t-30
 
-    // get the time series data from the pageviews api
-
+    this.setState({
+      startDate,
+      endDate
+    }, () => {
+      // get the time series data from the pageviews api
+      this.getTimeSeriesData(this.props.article);
+    })
 
   }
 
-  getTimeSeriesData() {
-    // fetch the data from the api and put it in this form:
-    // [["Sun", 32], ["Mon", 46], ["Tue", 28]] for the column chart from chartkick
+  getTimeSeriesData(article) {
+    // get the date range
+    const startDate = this.state.startDate;
+    const endDate = this.state.endDate;
 
-    // get today into the format for the url -- 2015100100 = 10/01/2015. We'll leave the hours as 00.
-    const today = new Date();
+    console.log(startDate)
 
-    // do two days since they don't have data yet for today, and sometimes don't have it for yesterday either
-    today.setDate(today.getDate() - 2);
+    let startDateStr = getSearchFormatDate(startDate);
+    let endDateStr = getSearchFormatDate(endDate);
 
-    // have to correct the month by 1 since it is 0-indexed
-    let monthNum = today.getMonth() + 1;
-    let month = monthNum < 10 ? '0' + monthNum.toString() : monthNum.toString();
+    // replace the spaces with _
+    let articleStr = article.replace(/ /g, '_')
 
-    let date = today.getDate();
-
-    let day = date < 10 ? '0' + date.toString() : date.toString();
-    let year = today.getFullYear().toString();
-
-    // a simple proxy is needed to avoid cors issues. I created one cloned from the 
-    // cors-anywhere.git project
-    // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/${year}/${month}/${day}`;
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/all-agents/${articleStr}/daily/${startDateStr}/${endDateStr}`;
     console.log(searchUrl)
+
+    // fetch the data from the api and put it in this form:
+    // [ ['timepoint', value], ['timepoint', value], etc... ]
 
     fetch(searchUrl, {
       method: 'GET',
@@ -67,49 +82,33 @@ export default class ArticleTimeSeries extends React.Component {
 
         // set up format for the google chart - from react-google-charts docs
         let data = [
-          [
-            'Wiki Page',
-            'Views',
-            { role: 'style' },
-            {
-              sourceColumn: 0,
-              role: 'annotation',
-              type: 'string',
-              calc: 'stringify',
-            },
-          ]
-          // data groups added here as ['Title', value, '#hexcolor', null],
+          ['Date', 'Page views']
         ]
 
-        // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
-        // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topArticles = json.items[0].articles.slice(2, 13);
+        let dataPoints = json.items;
 
-        // initalize rainbowvis to color each group dynamically
-        var myRainbow = new Rainbow();
+        // get the ticks for the graph, normally there are too many
+        let ticks = [0, 8, 16, 24, dataPoints.length - 1];
+        let graphTicks = [];
 
-        // get min and max
-        let max = topArticles[0].views;
-        let min = topArticles[topArticles.length - 1].views;
-        console.log(typeof (min), typeof (max))
+        // get min and max ?
 
-        myRainbow.setNumberRange(min, max); // set range based on data
-        myRainbow.setSpectrum('#E1F5FE', '#F8BBD0');
+        dataPoints.forEach((article, i) => {
+          // get '2019-04-02' from '2019040200'
+          let timestamp = article.timestamp.slice(4, 6) + '-' + article.timestamp.slice(6, 8);
 
-        topArticles.forEach((article, i) => {
-          let title = article.article.replace(/_/g, ' '); // make the _ into spaces
-          if (title !== 'Special:CreateAccount' && i < 10) {
-            let color = myRainbow.colourAt(article.views);
-            data.push([title, article.views, color, null]);
+          // save in the graph format
+          data.push([timestamp, article.views]);
+
+          if (!!ticks.indexOf(i)) {
+            graphTicks.push(timestamp);
           }
 
         });
 
-        console.log(data)
-
         this.setState({
-          topArticles: data,
-          date: `${year}-${month}-${date}`
+          data,
+          graphTicks
         })
 
       })
@@ -120,16 +119,57 @@ export default class ArticleTimeSeries extends React.Component {
 
   }
 
-  render(){
+  render() {
     return (
-      <div>
-        
+      <div style={styles.container}>
+
+        <p className="text-center" style={styles.title}>
+          Views in last 30 days
+        </p>
+
+        {this.state.data &&
+          <Chart
+            style={{ margin: 'auto auto' }}
+            width={'100%'}
+            height={'100%'}
+            chartType="LineChart"
+            loader={<div>Loading Chart</div>}
+            data={this.state.data}
+            options={{
+              legend: { position: 'none' },
+              chartArea: { width: '80%', height: '80%' },
+              // title: 'Views in last 30 days',
+              // titleTextStyle: { fontName: 'Sarabun', bold: 0, fontSize: 20, color: 'black' },
+              // hAxis: { title: 'Date', titleTextStyle: { color: '#333' } },
+              tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
+              vAxis: {
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+              },
+              hAxis: {
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: '#B5C2DC' },
+              },
+            }}
+
+            // For tests
+            rootProps={{ 'data-testid': '1' }}
+          />}
       </div>
     )
   }
 }
 
 const styles = {
-
+  container: {
+    width: '100%',
+    height: '300px',
+    margin: '10px'
+  }, 
+  title: {
+    fontFamily: 'Quicksand',
+    fontSize: '20px',
+    fontWeight: 600,
+    marginTop: '30px',
+    color: 'rgb(7, 100, 206)'
+  },
 }
 

@@ -50,13 +50,33 @@ export default class TopHits extends React.Component {
               chartArea: { width: '100%', height: '100%' },
               // legend: { position: 'in' },
               // titlePosition: 'in', axisTitlesPosition: 'in',
-              hAxis: { textPosition: 'in' },
+              hAxis: { 
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: '#B5C2DC' },
+                textPosition: 'in' 
+              },
               // vAxis: { textPosition: 'in' }
             }}
+
+            // the event will register what was clicked and pop up a modal of the article, same as 
+            chartEvents={[
+              {
+                eventName: 'select',
+                callback: ({ chartWrapper }) => {
+                  const chart = chartWrapper.getChart()
+                  const selection = chart.getSelection()
+                  
+                  let newSearch = this.props.data[selection[0].row+1][0];
+
+                  this.props.handleChange(newSearch);
+                  this.props.handleSubmit();
+                },
+              },
+            ]}
             // For tests
             rootProps={{ 'data-testid': '6' }}
           />
         </div>
+        
       </div>
     )
   }

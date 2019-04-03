@@ -12,6 +12,10 @@ import {
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+// components
+import ArticleTimeSeries from './ArticleTimeSeries';
+import ArticleModal from './ArticleModal';
+
 // google image search
 const GoogleImages = require('google-images');
 const client = new GoogleImages(process.env.REACT_APP_GOOGLE_CSE, process.env.REACT_APP_GOOGLE_KEY);
@@ -20,7 +24,7 @@ class ModalButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modal: false,
+      modalOpen: false,
       activeIndex: 0
     };
     this.next = this.next.bind(this);
@@ -63,7 +67,7 @@ class ModalButton extends React.Component {
 
   toggle() {
 
-    if (!this.state.modal) {
+    if (!this.state.modalOpen) {
       // for images from google
       client.search(this.props.title)
         .then(images => {
@@ -89,7 +93,7 @@ class ModalButton extends React.Component {
                 key={item.src}
               >
                 <img src={item.src} alt={item.altText} />
-                <CarouselCaption captionText={item.caption} captionHeader={item.caption} />
+                <CarouselCaption captionText={''} captionHeader={''} />
               </CarouselItem>
             );
           });
@@ -102,7 +106,7 @@ class ModalButton extends React.Component {
     }
 
     this.setState({
-      modal: !this.state.modal
+      modalOpen: !this.state.modalOpen
     });
 
   }
@@ -112,7 +116,7 @@ class ModalButton extends React.Component {
 
     return (
       <div className="" style={styles.main}>
-        
+
         <Button color="link"
           style={styles.button}
           onClick={this.toggle}>
@@ -120,50 +124,15 @@ class ModalButton extends React.Component {
         </Button>
 
         {/* button will toggle making this modal visible */}
-        <Modal className={this.props.className}
-          style={styles.modal}
-          isOpen={this.state.modal}
-          toggle={this.toggle}>
+          <ArticleModal
+            modalOpen={this.state.modalOpen}
+            toggle={this.toggle}
+            title={this.props.title}
+            extract={this.props.extract}
+            slides={this.state.slides}
+            items={this.state.items}
+          />
 
-          <ModalHeader toggle={this.toggle}>
-            <p style={styles.title}>{this.props.title}</p>
-          </ModalHeader>
-
-          <ModalBody>
-            <p style={styles.modalDescription}>{this.props.extract}</p>
-          </ModalBody>
-
-          {this.state.slides &&
-            <ModalBody>
-              
-              <Carousel
-                activeIndex={activeIndex}
-                next={this.next}
-                previous={this.previous}
-              >
-                <CarouselIndicators 
-                  style={{margin: '0px'}}
-                  items={this.state.items} 
-                  activeIndex={activeIndex} 
-                  onClickHandler={this.goToIndex} />
-
-                {this.state.slides}
-
-                <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
-                <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
-              
-              </Carousel>
-            </ModalBody>}
-
-          <ModalFooter>
-            <Button color="link"
-              style={styles.button}>
-              <a target="_blank"
-                href={`https://en.wikipedia.org/wiki/${this.props.title}`}>
-                Click to read the full article</a>
-            </Button>
-          </ModalFooter>
-        </Modal>
       </div>
     );
   }

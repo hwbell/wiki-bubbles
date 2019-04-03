@@ -39,7 +39,7 @@ class SearchPage extends Component {
 
 
 
-  // // for the data in the initial graph
+  // // for the data in the 'most viewed wiki pages' graph
   getTopArticles() {
     // fetch the data from the api and put it in this form:
     // [["Sun", 32], ["Mon", 46], ["Tue", 28]] for the column chart from chartkick
@@ -102,7 +102,7 @@ class SearchPage extends Component {
         console.log(typeof (min), typeof (max))
 
         myRainbow.setNumberRange(min, max); // set range based on data
-        myRainbow.setSpectrum('#E1F5FE', '#F8BBD0');
+        myRainbow.setSpectrum('#BBDEFB', '#FFCCFF');
 
         topArticles.forEach((article, i) => {
           let title = article.article.replace(/_/g, ' '); // make the _ into spaces
@@ -174,10 +174,14 @@ class SearchPage extends Component {
     this.setState({
       search: value
     });
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    if (e) {e.preventDefault();}
     this.getSearchResults(this.state.search);
   }
 
@@ -200,7 +204,7 @@ class SearchPage extends Component {
           </Button>
         </Form>
 
-        {this.state.pages && 
+        {this.state.pages &&
 
           <div style={styles.searchResults}>
             {Object.keys(this.state.pages).map((index, i) => {
@@ -230,26 +234,15 @@ class SearchPage extends Component {
 
         <hr id="tophits"></hr>
 
-        {this.state.topArticles && <TopHits date={this.state.date} data={this.state.topArticles} />}
+        {this.state.topArticles &&
+          <TopHits
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+            date={this.state.date}
+            data={this.state.topArticles}
+          />}
 
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
-        <div>
-          Note: Without a forward slash at the end of subfolder addresses, you might generate two requests to the server. Many servers will automatically add a forward slash to the end of the address, and then create a new request.
-          </div>
+
 
       </div>
     );
@@ -260,7 +253,7 @@ export default SearchPage;
 
 const styles = {
   container: {
-    paddingTop: '100px',
+    paddingTop: '120px',
     backgroundColor: 'rgba(255,255,255,0.7)'
   },
   input: {

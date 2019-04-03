@@ -22,26 +22,34 @@ export default class Navigator extends React.Component {
 
     return (
 
-        <div className="container fixed-top" style={styles.main}>
+      <div className="container fixed-top" style={styles.main}>
 
-          <div style={styles.titleHolder} className="row">
-            <div className="">
-              <i style={styles.icon} className="fab fa-wikipedia-w"></i>
-            </div>
-            <div style={styles.title} className="nav-title">
-              <p>ikipedia</p>
-            </div>
-
-            <div style={styles.navLink} className="nav-link">
-              <AnchorLink href="#search">Search</AnchorLink>
-            </div>
-            <div style={styles.navLink} className="nav-link">
-              <AnchorLink href="#tophits">Top Hits</AnchorLink>
+        <div style={styles.titleHolder} className="text-center row">
+          <div className="col">
+            <div className="row" style={styles.combinedTitle}>
+              <div className="">
+                <i style={styles.icon} className="fab fa-wikipedia-w"></i>
+              </div>
+              <div className="" className="nav-title">
+                <p style={styles.title}>ikipedia</p>
+              </div>
             </div>
           </div>
 
-
+          <div className="col">
+            <div className="row" style={styles.linkHolder}>
+              <div style={styles.navLink} className="col">
+                <AnchorLink href="#search" className="nav-link">Search</AnchorLink>
+              </div>
+              <div style={styles.navLink} className="col">
+                <AnchorLink href="#tophits" className="nav-link">Trending</AnchorLink>
+              </div>
+            </div>
+          </div>
         </div>
+
+
+      </div>
     );
   }
 }
@@ -49,26 +57,39 @@ export default class Navigator extends React.Component {
 const styles = {
   main: {
     width: '100%',
-    margin: '0px auto',
-    backgroundColor: 'rgba(255,255,255,1)'
+    // margin: '0px auto',
+    backgroundColor: 'white'
   },
   titleHolder: {
-    width: '80%',
-    margin: 'auto auto',
-    marginTop: '10px'
+    // width: '100%',
+    // margin: 'auto auto',
+    marginTop: '15px'
+  },
+  combinedTitle: {
+    // border: '1px solid black',
+    padding: '0px',
+    paddingLeft: '20px',
+    minWidth: '130px'
   },
   icon: {
     fontSize: '45px'
   },
   title: {
-    fontSize: '22px',
-    padding: '8px',
-    paddingLeft: '0px'
+    fontSize: 'calc(14px + 1vw)',
+    padding: '0px',
+    paddingTop: '8px',
+    // paddingRight: '8px'
+  },
+  linkHolder: {
+    // border: '1px solid black',
+    minWidth: ''
   },
   navLink: {
-    fontSize: '22px',
-    padding: '8px',
-    marginLeft: '30px',
-    color: ''
+    // border: '1px solid black',
+    textAlign: 'left',
+    width: '10vw',
+    fontSize: 'calc(14px + 1vw)',
+    padding: '0px',
+    margin: '0px',
   }
 }
