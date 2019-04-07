@@ -6,6 +6,7 @@
     "@weknow/react-bubble-chart-d3": "^1.0.11",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
+    "country-list": "^2.1.0",
     "d3": "^5.9.2",
     "google-images": "^2.1.0",
     "node-fetch": "^2.3.0",

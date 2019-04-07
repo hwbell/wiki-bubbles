@@ -22,27 +22,30 @@ export default class Navigator extends React.Component {
 
     return (
 
-      <div className="container fixed-top" style={styles.main}>
+      <div className="fixed-top" style={styles.main}>
 
         <div style={styles.titleHolder} className="text-center row">
-          <div className="col">
+          <div className="col-4">
             <div className="row" style={styles.combinedTitle}>
               <div className="">
-                <i style={styles.icon} className="fab fa-wikipedia-w"></i>
+                <AnchorLink href="#top" className="nav-title-icon">
+                  <i style={styles.icon} className="fab fa-wikipedia-w"></i>
+                </AnchorLink>
+
               </div>
-              <div className="" className="nav-title">
+              <div className="nav-title-text">
                 <p style={styles.title}>ikipedia</p>
               </div>
             </div>
           </div>
 
-          <div className="col">
+          <div className="col-8">
             <div className="row" style={styles.linkHolder}>
-              <div style={styles.navLink} className="col">
-                <AnchorLink href="#search" className="nav-link">Search</AnchorLink>
+              <div className="col-6">
+                <AnchorLink style={styles.navLink} href="#search" className="nav-link">Search</AnchorLink>
               </div>
-              <div style={styles.navLink} className="col">
-                <AnchorLink href="#tophits" className="nav-link">Trending</AnchorLink>
+              <div className="col-6">
+                <AnchorLink style={styles.navLink} href="#tophits" className="nav-link">Trending</AnchorLink>
               </div>
             </div>
           </div>
@@ -56,6 +59,7 @@ export default class Navigator extends React.Component {
 
 const styles = {
   main: {
+    // border: '1px solid black',
     width: '100%',
     // margin: '0px auto',
     backgroundColor: 'white'
@@ -66,13 +70,11 @@ const styles = {
     marginTop: '15px'
   },
   combinedTitle: {
-    // border: '1px solid black',
-    padding: '0px',
-    paddingLeft: '20px',
-    minWidth: '130px'
+    marginLeft: '30px',
+    width: '180px'
   },
   icon: {
-    fontSize: '45px'
+    fontSize: '40px'
   },
   title: {
     fontSize: 'calc(14px + 1vw)',
@@ -82,14 +84,15 @@ const styles = {
   },
   linkHolder: {
     // border: '1px solid black',
-    minWidth: ''
+    width: '180px',
+    margin: 'auto'
   },
   navLink: {
     // border: '1px solid black',
     textAlign: 'left',
-    width: '10vw',
+    // width: '60px',
     fontSize: 'calc(14px + 1vw)',
-    padding: '0px',
-    margin: '0px',
+    // padding: 0,
+    marginRight: '10px',
   }
 }

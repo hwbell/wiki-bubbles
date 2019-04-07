@@ -36,14 +36,20 @@ export default class SiteInformation extends React.Component {
         <div className="" style={styles.infoContainer}>
 
           <InformationIcon
+            iconClass={'fas fa-file'}
+            info={{ text: 'pages', count: this.props.stats.pages }}
+            tooltipOpen={this.state.tooltipOpen}
+          />
+
+          <InformationIcon
             iconClass={'fas fa-newspaper'}
             info={{ text: 'articles', count: this.props.stats.articles }}
             tooltipOpen={this.state.tooltipOpen}
           />
 
           <InformationIcon
-            iconClass={'fas fa-file'}
-            info={{ text: 'pages', count: this.props.stats.pages }}
+            iconClass={'fas fa-images'}
+            info={{ text: 'images', count: this.props.stats.images }}
             tooltipOpen={this.state.tooltipOpen}
           />
 
@@ -77,10 +83,12 @@ export default class SiteInformation extends React.Component {
 
 const styles = {
   container: {
-    width: '100%'
+    width: '100%',
+    // border: '1px solid black'
   },
   infoContainer: {
     // border: '1px solid black',
+    width: '90%',
     width: '100%'
   },
   title: {

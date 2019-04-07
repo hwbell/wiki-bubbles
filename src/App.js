@@ -5,7 +5,7 @@ import './App.css';
 import posed from 'react-pose';
 
 // components
-import SearchPage from './components/SearchPage';
+import MainPage from './components/MainPage';
 import Navigator from './components/Navigator';
 
 class App extends Component {
@@ -18,18 +18,34 @@ class App extends Component {
 
   }
 
+  componentDidMount () {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
+  }
+
   render() {
     return (
-      <div className="container">
+      <div className="">
+
+        <hr style={styles.hr} id="top"></hr>
         
         <Navigator/>
 
-        <SearchPage/>
+        <MainPage/>
       
       </div>
     );
   }
 }
 
+const styles = {
+  hr: {
+    borderColor: 'white',
+    margin: '0px'
+  }
+}
+
 export default App;
-// 

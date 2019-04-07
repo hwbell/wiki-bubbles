@@ -16,6 +16,20 @@ const getSearchFormatDate = (dateObj) => {
   return `${year}${month}${day}00`
 }
 
+// this function converts bucket counts in string form 
+// to the mid-range of the bucket in number form
+// useful for the response from pageviews by country
+const getMidRangeFromBucket = (bucketStr) => {
+  let strings = bucketStr.split('-');
+  let numbers = strings.map((str) => {
+    return Number(str);
+  });
+
+  return (numbers[0] + numbers[1]) / 2;
+}
+
+
 module.exports = {
+  getMidRangeFromBucket,
   getSearchFormatDate
 }

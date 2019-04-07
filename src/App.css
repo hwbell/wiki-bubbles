@@ -5,7 +5,7 @@
 body {
   height: 800px;
   background: url('./assets/images/wiki-globe.jpeg') no-repeat;
-  background-position: 75% 40%; 
+  background-position: 85% 40%; 
   background-attachment: fixed;
   padding-right: 0 !important;
   padding-left: 0 !important;
@@ -44,17 +44,18 @@ input:-webkit-autofill:active  {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
-.nav-title {
-  font-family: Quicksand;
-}
-
-.nav-link {
+.nav-link, .nav-title-icon, .nav-title-text {
   font-family: Quicksand;
   transition: all 0.3s ease;
-  /* background-color: rbga(0,0,0,0.8); */
-  color: rgb(7, 100, 206);
 }
-.nav-link:hover {
+.nav-link {
+  color: rgb(7, 100, 206);
+  font-weight: 600;
+}
+.nav-title-icon, .nav-title-text {
+  color: black;
+}
+.nav-link:hover, .nav-title-icon:hover {
   color: rgb(132, 142, 158);
 }
 /*  */
