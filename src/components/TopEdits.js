@@ -37,6 +37,7 @@ export default class TopHits extends React.Component {
             data={this.props.data}
             options={{
               // title: `Most viewed articles on ${this.props.date}`,
+              select: this.linkToSelection,
               width: '100%',
               height: 400,
               bar: { groupWidth: '80%' },
@@ -56,7 +57,7 @@ export default class TopHits extends React.Component {
               // vAxis: { textPosition: 'in' }
             }}
 
-            // the event will register what was clicked and pop up a modal of the article, same as 
+            // the event will register what was clicked feed it back to the search
             chartEvents={[
               {
                 eventName: 'select',
@@ -83,8 +84,8 @@ export default class TopHits extends React.Component {
 
 const styles = {
   container: {
-    marginTop: '6vh',
-    marginBottom: '6vh'
+    marginTop: '10vh',
+    marginBottom: '10vh'
   },
   title: {
     fontFamily: 'Quicksand',

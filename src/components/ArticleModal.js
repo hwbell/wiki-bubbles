@@ -15,6 +15,25 @@ import 'bootstrap/dist/css/bootstrap.css';
 // components
 import ArticleTimeSeries from './ArticleTimeSeries';
 
+// animation with pose
+// define the container with children behavior and then the children
+// with enter / exit information
+import posed from 'react-pose';
+const Container = posed.div({
+  enter: { staggerChildren: 150 },
+  exit: { staggerChildren: 150, staggerDirection: -1 }
+});
+
+const Div = posed.div({
+  enter: { x: -100, opacity: 1 },
+  exit: { x: 0, opacity: 0 }
+});
+
+const Hr = posed.hr({
+  enter: { x: 0, opacity: 1 },
+  exit: { x: 0, opacity: 0 }
+});
+
 // google image search
 const GoogleImages = require('google-images');
 const client = new GoogleImages(process.env.REACT_APP_GOOGLE_CSE, process.env.REACT_APP_GOOGLE_KEY);
@@ -74,66 +93,80 @@ class ModalButton extends React.Component {
     const { activeIndex } = this.state;
 
     return (
+      <Container>
+        <Modal className='modal-lg'
+          style={styles.modal}
+          isOpen={this.props.modalOpen}
+          toggle={this.props.toggle}>
 
-      <Modal className='modal-lg'
-        style={styles.modal}
-        isOpen={this.props.modalOpen}
-        toggle={this.props.toggle}>
+          <ModalHeader>
+            <p style={styles.title}>{this.props.title}</p>
+          </ModalHeader>
 
-        <ModalHeader>
-          <p style={styles.title}>{this.props.title}</p>
-        </ModalHeader>
-
-        <ModalBody>
-
-          <p style={styles.modalDescription}>{this.props.extract}</p>
-
-          <a style={styles.modalLink} className="link"
-            target="_blank"
-            href={`https://en.wikipedia.org/wiki/${this.props.title}`}>
-            read the full wiki</a>
-
-        </ModalBody>
-
-        {this.props.slides &&
           <ModalBody>
 
-            <Carousel
-              activeIndex={activeIndex}
-              next={this.next}
-              previous={this.previous}
-            >
-              <CarouselIndicators
-                style={{ margin: '0px' }}
-                items={this.props.items}
-                activeIndex={activeIndex}
-                onClickHandler={this.goToIndex} />
+            <p style={styles.modalDescription}>{this.props.extract}</p>
 
-              {this.props.slides}
+            <a style={styles.modalLink} className="link"
+              target="_blank"
+              href={`https://en.wikipedia.org/wiki/${this.props.title}`}>
+              read the full wiki</a>
 
-              <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
-              <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
+          </ModalBody>
 
-            </Carousel>
-          </ModalBody>}
+          {this.props.slides ?
+            <Div>
+              <ModalBody>
 
-        <ModalBody>
-          <ArticleTimeSeries article={this.props.title} />
-        </ModalBody>
+                <Carousel
+                  activeIndex={activeIndex}
+                  next={this.next}
+                  previous={this.previous}
+                >
+                  <CarouselIndicators
+                    style={{ outline: 'black' }}
+                    items={this.props.items}
+                    activeIndex={activeIndex}
+                    onClickHandler={this.goToIndex} />
 
-        <ModalFooter style={styles.footer}>
-          <hr></hr>
-        </ModalFooter>
+                  {this.props.slides}
 
+                  <CarouselControl
+                    style={{ outline: 'black' }}
+                    direction="prev"
+                    directionText="Previous"
+                    onClickHandler={this.previous} />
 
+                  <CarouselControl
+                    style={{ outline: 'black' }}
+                    direction="next"
+                    directionText="Next"
+                    onClickHandler={this.next} />
 
-      </Modal>
+                </Carousel>
+              </ModalBody>
+            </Div>
+            :
+            <ModalBody>
+              <Div style={{ height: '200px' }}></Div>
+            </ModalBody>}
+
+          <ModalBody>
+            <ArticleTimeSeries article={this.props.title} />
+          </ModalBody>
+
+          <ModalFooter style={styles.footer}>
+            <hr></hr>
+          </ModalFooter>
+
+        </Modal>
+      </Container>
     );
   }
 }
 
 const styles = {
-  main: {
+  modal: {
     width: '100%'
   },
 

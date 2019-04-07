@@ -68,7 +68,7 @@ class ModalButton extends React.Component {
   toggle() {
 
     if (!this.state.modalOpen) {
-      // for images from google
+      // for images from google API
       client.search(this.props.title)
         .then(images => {
           console.log(images)

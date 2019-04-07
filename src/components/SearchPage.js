@@ -4,13 +4,37 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import ModalButton from './ModalButton';
 import TopHits from './TopHits';
+import SiteInformation from './SiteInformation';
+
+// functions
+import {
+  getSearchFormatDate
+} from '../functions/dataTools'
 
 // styling
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-// animation
+// animation with pose
+// define the container with children behavior and then the children
+// with enter / exit information
 import posed from 'react-pose';
+
+const Container = posed.div({
+  enter: { staggerChildren: 50 },
+  exit: { staggerChildren: 50, staggerDirection: -1 }
+});
+
+const Div = posed.div({
+  enter: { x: 0, opacity: 1 },
+  exit: { x: 0, opacity: 0 }
+});
+
+const Hr = posed.hr({
+  enter: { x: 0, opacity: 1 },
+  exit: { x: 0, opacity: 0 }
+});
+
 var Rainbow = require('rainbowvis.js');
 
 const fetch = require('node-fetch');
@@ -25,6 +49,7 @@ class SearchPage extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.getSearchResults = this.getSearchResults.bind(this);
     this.getTopArticles = this.getTopArticles.bind(this);
+    this.getTopEdits = this.getTopEdits.bind(this);
 
     this.state = {
       search: 'mars'
@@ -49,20 +74,13 @@ class SearchPage extends Component {
 
     // do two days since they don't have data yet for today, and sometimes don't have it for yesterday either
     today.setDate(today.getDate() - 2);
-
-    // have to correct the month by 1 since it is 0-indexed
-    let monthNum = today.getMonth() + 1;
-    let month = monthNum < 10 ? '0' + monthNum.toString() : monthNum.toString();
-
-    let date = today.getDate();
-
-    let day = date < 10 ? '0' + date.toString() : date.toString();
-    let year = today.getFullYear().toString();
+    let date = getSearchFormatDate(today);
+    let dateStr = date.slice(0, 4) + '/' + date.slice(4, 6) + '/' + date.slice(6, 8);
 
     // a simple proxy is needed to avoid cors issues. I created one cloned from the 
     // cors-anywhere.git project
     // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/${year}/${month}/${day}`;
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/${dateStr}`;
     console.log(searchUrl)
 
     fetch(searchUrl, {
@@ -91,7 +109,7 @@ class SearchPage extends Component {
 
         // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
         // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topArticles = json.items[0].articles.slice(2, 13);
+        let topArticles = json.items[0].articles.slice(2, 14);
 
         // initalize rainbowvis to color each group dynamically
         var myRainbow = new Rainbow();
@@ -106,7 +124,7 @@ class SearchPage extends Component {
 
         topArticles.forEach((article, i) => {
           let title = article.article.replace(/_/g, ' '); // make the _ into spaces
-          if (title !== 'Special:CreateAccount' && i < 10) {
+          if (title !== 'Special:CreateAccount' && title !== 'Special:Search' && i < 10) {
             let color = myRainbow.colourAt(article.views);
             data.push([title, article.views, color, null]);
           }
@@ -117,7 +135,7 @@ class SearchPage extends Component {
 
         this.setState({
           topArticles: data,
-          date: `${year}-${month}-${date}`
+          date: dateStr
         })
 
       })
@@ -128,6 +146,9 @@ class SearchPage extends Component {
 
   }
 
+  getTopEdits() {
+
+  }
 
   // for the titles and snippets
   getSearchResults(search) {
@@ -135,15 +156,23 @@ class SearchPage extends Component {
     const targetUrl = "https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&generator=search&prop=extracts&exchars=450&explaintext=1&exlimit=10&exintro=1&format=json&sortby=relevance&origin=*&gsrsearch="
     const searchUrl = targetUrl + search;
 
+    // make the fetch to the api 
     fetch(searchUrl, { method: 'GET' })
       .then(res => res.json()) // expecting a json response
       .then((json) => {
         console.log(json)
 
+        // parse the site info, from passing the siprop=statistics in the url
+        // just need to add commas to the gigantic numbers
+        let stats = json.query.statistics;
+        Object.keys(stats).forEach((stat) => {
+          let number = stats[`${stat}`];
+          stats[`${stat}`] = number.toLocaleString();
+        })
+
         // now format the data for the graph
         let data = Object.keys(json.query.pages).map((index, i) => {
 
-          let extract = json.query.pages[`${index}`].extract;
           let title = json.query.pages[`${index}`].title;
           let value = json.query.pages[`${index}`].index;
 
@@ -157,6 +186,7 @@ class SearchPage extends Component {
         this.setState({
           pages: json.query.pages,
           data,
+          stats
           // search
         });
 
@@ -181,58 +211,67 @@ class SearchPage extends Component {
   }
 
   handleSubmit(e) {
-    if (e) {e.preventDefault();}
+    if (e) { e.preventDefault(); }
     this.getSearchResults(this.state.search);
   }
 
   render() {
 
     return (
-      <div id="search" className="container" style={styles.container}>
+      <Container className="container" style={styles.container}>
 
-        <Form className="row" style={styles.input} onSubmit={this.handleSubmit}>
-          <FormGroup>
-            <Input className="input" style={styles.searchInput} type="text" name="name" id="contactname" placeholder="search"
-              onChange={(e) => this.handleChange(`${e.target.value}`)}
-            />
-          </FormGroup>
+        {this.state.stats &&
+          <SiteInformation
+            stats={this.state.stats}
+          />}
 
-          <Button color="link"
-            type="submit"
-            style={styles.button}>
-            <i className={`fas fa-search-plus`} style={styles.icon}></i>
-          </Button>
-        </Form>
+        <Hr id="search"></Hr>
 
-        {this.state.pages &&
+        <Div style={styles.searchContainer}>
+          <Form className="row" style={styles.input} onSubmit={this.handleSubmit}>
+            <FormGroup>
+              <Input className="input" style={styles.searchInput} type="text" name="name" id="contactname" placeholder="search"
+                onChange={(e) => this.handleChange(`${e.target.value}`)}
+              />
+            </FormGroup>
 
-          <div style={styles.searchResults}>
-            {Object.keys(this.state.pages).map((index, i) => {
+            <Button color="link"
+              type="submit"
+              style={styles.button}>
+              <i className={`fas fa-search-plus`} style={styles.icon}></i>
+            </Button>
+          </Form>
 
-              let extract = this.state.pages[`${index}`].extract;
-              let title = this.state.pages[`${index}`].title;
+          {this.state.pages &&
 
-              return (
-                <div key={i} style={styles.result} className="row">
-                  {/* <Button color="info">
+            <Div style={styles.searchResults}>
+              {Object.keys(this.state.pages).map((index, i) => {
+
+                let extract = this.state.pages[`${index}`].extract;
+                let title = this.state.pages[`${index}`].title;
+
+                return (
+                  <Div key={i} style={styles.result} className="row">
+                    {/* <Button color="info">
                         <p><strong>{title}</strong></p>
                       </Button>
 
                       <p>{extract}</p> */}
-                  <ModalButton
-                    date={this.state.date}
-                    title={title}
-                    extract={extract}
-                  />
+                    <ModalButton
+                      date={this.state.date}
+                      title={title}
+                      extract={extract}
+                    />
 
-                </div>
-              )
-            })}
-          </div>
+                  </Div>
+                )
+              })}
+            </Div>
 
-        }
+          }
+        </Div>
 
-        <hr id="tophits"></hr>
+        <Hr id="tophits"></Hr>
 
         {this.state.topArticles &&
           <TopHits
@@ -242,9 +281,10 @@ class SearchPage extends Component {
             data={this.state.topArticles}
           />}
 
+        <Hr id="toedits"></Hr>
 
 
-      </div>
+      </Container>
     );
   }
 }
@@ -253,8 +293,14 @@ export default SearchPage;
 
 const styles = {
   container: {
+    // border: '1px solid black',
     paddingTop: '120px',
-    backgroundColor: 'rgba(255,255,255,0.7)'
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    width: '100%',
+    // padding: 0
+  },
+  searchContainer: {
+    paddingTop: '60px'
   },
   input: {
     // border: '1px solid black'
