@@ -91,7 +91,7 @@ const styles = {
     // border: '1px solid black',
     textAlign: 'left',
     // width: '60px',
-    fontSize: 'calc(14px + 1vw)',
+    fontSize: 'calc(16px + 0.5vw)',
     // padding: 0,
     marginRight: '10px',
   }

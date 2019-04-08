@@ -32,13 +32,13 @@ export default class PieGraph extends React.Component {
     return (
       <div className="row" style={styles.container}>
 
-        <Tooltip placement="right"
+        {/* <Tooltip placement="right"
           style={styles.tooltip}
           isOpen={this.state.tooltipOpen}
           target={target}
           toggle={this.toggle}>
           {this.props.info.text}
-        </Tooltip>
+        </Tooltip> */}
 
         <div style={styles.iconHolder}>
           <i className={this.props.iconClass} id={target} style={styles.icon}></i>
@@ -70,7 +70,7 @@ const styles = {
   iconHolder: {
     // border: '1px solid black',
     width: '70px',
-    margin: '2vw'
+    margin: '8px',
   },
   icon: {
     fontSize: 40,

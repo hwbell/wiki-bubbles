@@ -186,7 +186,7 @@ export default class MainPage extends Component {
 
             {this.state.pages &&
 
-              <SearchResults 
+              <SearchResults
                 pages={this.state.pages}
                 date={this.state.date}
               />
@@ -202,6 +202,8 @@ export default class MainPage extends Component {
             date={this.state.date}
           />
 
+          <Hr id="topedits"></Hr>
+          
           <TopCountries />
 
           <Hr id="topedits"></Hr>

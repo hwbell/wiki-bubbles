@@ -82,7 +82,7 @@ export default class TopHits extends React.Component {
         topCountries.forEach((result, i) => {
 
           let title = getName(result.country);
-          let views = getMidRangeFromBucket(result.views);
+          let views = result.views_ceil;
           
           // let color = '#' + myRainbow.colourAt(views);
           // colors.push(color);
@@ -125,7 +125,7 @@ export default class TopHits extends React.Component {
       <div style={styles.container}>
 
         <p className="text-center" style={styles.title}>
-          Which countries contribute the most?
+          Which countries Wiki the hardest?
         </p>
         {/* <p className="text-center" style={styles.subtitle}>
           {`on the day of ${this.props.date}`}
@@ -142,8 +142,17 @@ export default class TopHits extends React.Component {
             options={{
               width: '100%',
               height: 400,
+              backgroundColor: 'none',
+              tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
+              legend: { 
+                position: 'right', 
+                alignment: 'center',
+                textStyle: {
+                  fontName: 'Sarabun', bold: 0, fontSize: 14
+                }
+              },
               colors: this.state.colors,
-              chartArea: { width: '100%', height: '90%' },
+              chartArea: { width: '100%', height: '100%' },
             }}
             rootProps={{ 'data-testid': '1' }}
           />
@@ -156,14 +165,15 @@ export default class TopHits extends React.Component {
 
 const styles = {
   container: {
-    padding: '30px',
-    paddingTop: '60px'
+    padding: '60px 20px 0px 20px',
+    backgroundColor: 'rgba(255,255,255,0.4)'
   },
   title: {
     fontFamily: 'Quicksand',
     fontSize: '22px',
     fontWeight: 600,
-    // margin: '30px',
+    margin: '30px',
+    marginTop: '0px',
     color: 'rgb(7, 100, 206)'
   },
   chartHolder: {

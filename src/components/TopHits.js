@@ -115,10 +115,10 @@ export default class TopHits extends React.Component {
       <div style={styles.container}>
         
         <p className="text-center" style={styles.title}>
-          Most popular wiki pages
+          Most popular Wiki pages
         </p>
         <p className="text-center" style={styles.subtitle}>
-          {`on the day of ${this.props.date}`}
+          {`on the day of ${this.state.date}`}
         </p>
 
 
@@ -132,6 +132,7 @@ export default class TopHits extends React.Component {
               // title: `Most viewed articles on ${this.props.date}`,
               width: '100%',
               height: 400,
+              backgroundColor: 'none',
               bar: { groupWidth: '80%' },
               legend: { position: 'none' },
               tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
@@ -176,8 +177,9 @@ export default class TopHits extends React.Component {
 
 const styles = {
   container: {
-    padding: '30px',
-    paddingTop: '60px'
+
+    padding: '60px 20px 0px 20px',
+    backgroundColor: 'rgba(255,255,255,0.4)'
   },
   title: {
     fontFamily: 'Quicksand',

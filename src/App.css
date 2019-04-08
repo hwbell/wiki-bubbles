@@ -24,6 +24,54 @@ body {
   100% { -webkit-transform: rotateY(360deg); }
 }
 
+/* on the SiteInformation section */
+.fa-file {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.fa-newspaper {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.fa-images {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.fa-edit {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.fa-users {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.fa-chalkboard-teacher {
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* on the Main page input */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  box-shadow: 0 0 0 30px white inset !important;
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+/* on the Navigator */
 .fa-wikipedia-w {
   animation-name: spin;
   -webkit-animation-name: spin;
@@ -34,14 +82,6 @@ body {
   -webkit-animation-iteration-count: infinite; /* The magic keyword for infinite*/
   animation-timing-function: cubic-bezier(0.075, 0.885, 0.05, 1);
   -webkit-animation-timing-function: cubic-bezier(0.075, 0.885, 0.05, 1);
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-  box-shadow: 0 0 0 30px white inset !important;
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
 .nav-link, .nav-title-icon, .nav-title-text {
