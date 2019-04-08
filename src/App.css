@@ -26,37 +26,37 @@ body {
 
 /* on the SiteInformation section */
 .fa-file {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(67, 40, 155)), to(rgb(77, 99, 225)));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fa-newspaper {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  background: rgb(70, 135, 255);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fa-images {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(67, 40, 155)), to(rgb(77, 99, 225)));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fa-edit {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  background: rgb(70, 135, 255);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fa-users {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(103, 58, 183)), to(rgb(77, 99, 225)));
+  background: -webkit-gradient(linear, left top, right bottom, from(rgb(67, 40, 155)), to(rgb(77, 99, 225)));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fa-chalkboard-teacher {
-  background: -webkit-gradient(linear, left top, right bottom, from(rgb(70, 135, 255)), to(rgb(173, 178, 255)));
+  background: rgb(70, 135, 255);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
