@@ -127,9 +127,9 @@ export default class TopHits extends React.Component {
         <p className="text-center" style={styles.title}>
           Which countries Wiki the hardest?
         </p>
-        {/* <p className="text-center" style={styles.subtitle}>
-          {`on the day of ${this.props.date}`}
-        </p> */}
+        <p className="text-center" style={styles.subtitle}>
+          pageviews by country
+        </p>
 
 
         {this.state.data && 
@@ -174,6 +174,13 @@ const styles = {
     fontWeight: 600,
     margin: '30px',
     marginTop: '0px',
+    color: 'rgb(7, 100, 206)'
+  },
+  subtitle: {
+    fontFamily: 'Quicksand',
+    fontSize: 18,
+    marginTop: '10px',
+    marginBottom: '25px',
     color: 'rgb(7, 100, 206)'
   },
   chartHolder: {
