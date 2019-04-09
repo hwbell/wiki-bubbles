@@ -53,7 +53,7 @@ export default class TopHits extends React.Component {
     })
       .then(res => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
 
         // set up format for the google chart - from react-google-charts docs
         let data = [
@@ -144,7 +144,7 @@ export default class TopHits extends React.Component {
               // legend: { position: 'in' },
               // titlePosition: 'in', axisTitlesPosition: 'in',
               hAxis: { 
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: '#B5C2DC' },
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
                 textPosition: 'in' 
               },
               // vAxis: { textPosition: 'in' }

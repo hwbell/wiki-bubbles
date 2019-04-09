@@ -8,6 +8,7 @@ import TopHits from './TopHits';
 import SiteInformation from './SiteInformation';
 import SearchResults from './SearchResults';
 import TopCountries from './TopCountries';
+import TopEdits from './TopEdits';
 
 // functions
 import {
@@ -205,6 +206,10 @@ export default class MainPage extends Component {
           <Hr id="topedits"></Hr>
           
           <TopCountries />
+
+          <Hr id="topedits"></Hr>
+
+          <TopEdits />
 
           <Hr id="topedits"></Hr>
 

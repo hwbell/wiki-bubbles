@@ -70,10 +70,10 @@ const styles = {
   iconHolder: {
     // border: '1px solid black',
     width: '70px',
-    margin: '8px',
+    margin: '2vw',
   },
   icon: {
-    fontSize: 40,
+    fontSize: 'calc(40px + 1vw)',
     // border: '1px solid black',
     // width: '100px'
     // margin: '15px'

@@ -8,10 +8,13 @@ import { Chart } from 'react-google-charts';
 // functions
 import {
   getSearchFormatDate,
-  getMidRangeFromBucket
+  getPopulation
 } from '../functions/dataTools'
 
-const { getCode, getName } = require('country-list');
+import countryData from '../assets/json/countries';
+
+// these npm packages are very useful
+const { getName } = require('country-list');
 var Rainbow = require('rainbowvis.js');
 const fetch = require('node-fetch');
 
@@ -22,12 +25,14 @@ export default class TopHits extends React.Component {
       // 
     };
 
-    // this.toggle = this.toggle.bind(this);
+    this.renderPieChart = this.renderPieChart.bind(this);
   }
 
   componentDidMount() {
     this.getTopCountries();
   }
+
+
 
   // // for the data in the 'most viewed wiki pages' graph
   getTopCountries() {
@@ -42,9 +47,6 @@ export default class TopHits extends React.Component {
     let date = getSearchFormatDate(today);
     let dateStr = date.slice(0, 4) + '/' + date.slice(4, 6);
 
-    // a simple proxy is needed to avoid cors issues. I created one cloned from the 
-    // cors-anywhere.git project
-    // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
     const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top-by-country/en.wikipedia/all-access/2015/10`;
     console.log(searchUrl)
 
@@ -57,40 +59,47 @@ export default class TopHits extends React.Component {
         console.log(json);
 
         // set up format for the google chart - from react-google-charts docs
-        let data = [
+        let pieData = [
           ['Task', 'Hours per Day']
           // data groups pushed here as ['Title', value, '#hexcolor', null],
         ]
-        // let colors = [
-        //   // colors pushed to this array
-        // ]
 
+        let bubbleData = [
+          ['Country', 'population', 'views', 'views per capita']
+        ]
 
-        let topCountries = json.items[0].countries.slice(0, 10);
-
-        // initalize rainbowvis to color each group dynamically
-        // var myRainbow = new Rainbow();
-
-        // // get min and max
-        // let max = getMidRangeFromBucket(topCountries[0].views);
-        // let min = getMidRangeFromBucket(topCountries[topCountries.length - 1].views);
-
-        // myRainbow.setNumberRange(min, max); // set range based on data
-        // myRainbow.setSpectrum('#BBDEFB', '#FFCCFF');
-
-        // push each result into the array
+        let topCountries = json.items[0].countries.slice(0, 16);
+        console.log(topCountries)
         topCountries.forEach((result, i) => {
 
-          let title = getName(result.country);
-          let views = result.views_ceil;
-          
-          // let color = '#' + myRainbow.colourAt(views);
-          // colors.push(color);
-          data.push([title, views]);
+          if (result.country !== '--') {
+            let title = getName(result.country);
+            let views = result.views_ceil;
+            let population = Number(getPopulation(title, countryData))
+            let perCapita = views / population;
+
+            // we'll display in millions for views and population
+            let adjustedViews = views / 1000000; 
+            let adjustedPopulation = population / 1000000; 
+
+            // Iran seems to be the one country on the high views list that has 
+            // too long of a name, so just fix it here.
+            if (title === 'Iran, Islamic Republic of') {
+              title = 'Iran';
+            } 
+
+            console.log(title)
+            console.log(population)
+            console.log(views)
+            console.log(perCapita)
+
+
+            pieData.push([title, views]);
+            bubbleData.push([title, adjustedPopulation, adjustedViews, perCapita]);
+          }
 
         });
 
-        console.log(data)
         const colors = [
           '#F8BBD0',
           '#E1BEE7',
@@ -105,7 +114,8 @@ export default class TopHits extends React.Component {
         ];
 
         this.setState({
-          data,
+          pieData,
+          bubbleData,
           colors,
           date: dateStr
         })
@@ -115,7 +125,92 @@ export default class TopHits extends React.Component {
         console.log(e);
         return e;
       });
+  }
 
+  renderPieChart() {
+    return (
+      <div className="col" style={styles.chartHolder}>
+
+        <Chart
+          chartType="PieChart"
+          loader={<div>Loading Chart</div>}
+          data={this.state.pieData}
+          options={{
+            width: '100%',
+            height: 400,
+            backgroundColor: 'none',
+            tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
+            legend: {
+              position: 'right',
+              alignment: 'center',
+              textStyle: {
+                fontName: 'Sarabun', bold: 0, fontSize: 14
+              }
+            },
+            colors: this.state.colors,
+            chartArea: { width: '100%', height: '100%' },
+          }}
+          rootProps={{ 'data-testid': '1' }}
+        />
+      </div>
+    )
+  }
+
+  renderBubbleChart() {
+    return (
+      <div className="col" style={styles.chartHolder}>
+        <Chart
+          chartType="BubbleChart"
+          loader={<div>Loading Chart</div>}
+          data={this.state.bubbleData}
+          options={{
+            title: 'increasing per capita views ->',
+            titleTextStyle: { fontName: 'Sarabun', italic: 0, bold: 0, fontSize: 16, color: 'grey' },
+            bubble: {
+              textStyle: {
+                fontName: 'Sarabun',
+                italic: 0,
+                bold: 0,
+                fontSize: 12,
+                color: '#222757'
+              },
+              textPosition: 'in'
+            },
+            width: '100%',
+            height: 400,
+            backgroundColor: 'none',
+            chartArea: { width: '80%', height: '70%' },
+            colorAxis: {
+              legend: {
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' }
+              },
+              minValue: 0,
+              maxValue: 15,
+              colors: ['#4FC3F7', '#E91E63']
+            },
+            sizeAxis: {
+              maxValue: 20
+            },
+            hAxis: {
+              scaleType: 'log',
+              minValue: 0,
+              title: 'population (millions)',
+              titleTextStyle: { fontName: 'Sarabun', italic: 0, bold: 0, fontSize: 16, color: 'grey' },
+              textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+            },
+            vAxis: {
+              scaleType: 'mirrorLog',
+              maxValue: 6000,
+              title: 'page views (millions)',
+              titleTextStyle: { fontName: 'Sarabun', italic: 0, bold: 0, fontSize: 16, color: 'grey' },
+              textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+            },
+            
+          }}
+          rootProps={{ 'data-testid': '2' }}
+        />
+      </div>
+    )
   }
 
   render() {
@@ -125,38 +220,16 @@ export default class TopHits extends React.Component {
       <div style={styles.container}>
 
         <p className="text-center" style={styles.title}>
-          Which countries Wiki the hardest?
-        </p>
-        <p className="text-center" style={styles.subtitle}>
-          pageviews by country
+          Which countries view the most?
         </p>
 
+        {this.state.pieData && this.renderPieChart()}
 
-        {this.state.data && 
-        <div className="col" style={styles.chartHolder}>
+        <p className="text-center" style={styles.title}>
+          How does population compare to page views?
+        </p>
 
-          <Chart
-            chartType="PieChart"
-            loader={<div>Loading Chart</div>}
-            data={this.state.data}
-            options={{
-              width: '100%',
-              height: 400,
-              backgroundColor: 'none',
-              tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
-              legend: { 
-                position: 'right', 
-                alignment: 'center',
-                textStyle: {
-                  fontName: 'Sarabun', bold: 0, fontSize: 14
-                }
-              },
-              colors: this.state.colors,
-              chartArea: { width: '100%', height: '100%' },
-            }}
-            rootProps={{ 'data-testid': '1' }}
-          />
-        </div>}
+        {this.renderBubbleChart()}
 
       </div>
     )
@@ -172,7 +245,7 @@ const styles = {
     fontFamily: 'Quicksand',
     fontSize: '22px',
     fontWeight: 600,
-    margin: '30px',
+    margin: '20px',
     marginTop: '0px',
     color: 'rgb(7, 100, 206)'
   },
@@ -184,7 +257,8 @@ const styles = {
     color: 'rgb(7, 100, 206)'
   },
   chartHolder: {
-    margin: '30px'
+    marginTop: '5vh',
+    marginBottom: '5vh'
   }
 }
 

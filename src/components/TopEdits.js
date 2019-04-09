@@ -14,7 +14,7 @@ import {
 var Rainbow = require('rainbowvis.js');
 const fetch = require('node-fetch');
 
-export default class TopHits extends React.Component {
+export default class TopEdits extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,11 +25,11 @@ export default class TopHits extends React.Component {
   }
 
   componentDidMount() {
-    this.getTopEdits();
+    this.gettopEdits();
   }
 
   // // for the data in the 'most viewed wiki pages' graph
-  getTopEdits() {
+  gettopEdits() {
     // fetch the data from the api and put it in this form:
     // [["Sun", 32], ["Mon", 46], ["Tue", 28]] for the column chart from chartkick
 
@@ -44,7 +44,7 @@ export default class TopHits extends React.Component {
     // a simple proxy is needed to avoid cors issues. I created one cloned from the 
     // cors-anywhere.git project
     // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/edited-pages/top/en.wikipedia/all-editor-types/content/daily/${dateStr}`;
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/editors/top-by-edits/en.wikipedia/user/all-page-types/2018/01/all-days`;
     console.log(searchUrl)
 
     fetch(searchUrl, {
@@ -59,7 +59,7 @@ export default class TopHits extends React.Component {
         let data = [
           [
             'Wiki Page',
-            'Views',
+            'edits',
             { role: 'style' },
             {
               sourceColumn: 0,
@@ -73,32 +73,31 @@ export default class TopHits extends React.Component {
 
         // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
         // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topArticles = json.items[0].articles.slice(2, 14);
+        let topEditors = json.items[0].results[0].top.slice(2, 14);
 
         // initalize rainbowvis to color each group dynamically
         var myRainbow = new Rainbow();
 
         // get min and max
-        let max = topArticles[0].views;
-        let min = topArticles[topArticles.length - 1].views;
-        console.log(typeof (min), typeof (max))
+        let max = topEditors[0].edits;
+        let min = topEditors[topEditors.length - 1].edits;
+        // console.log(typeof (min), typeof (max))
 
         myRainbow.setNumberRange(min, max); // set range based on data
         myRainbow.setSpectrum('#BBDEFB', '#FFCCFF');
 
-        topArticles.forEach((article, i) => {
-          let title = article.article.replace(/_/g, ' '); // make the _ into spaces
-          if (title !== 'Special:CreateAccount' && title !== 'Special:Search' && i < 10) {
-            let color = myRainbow.colourAt(article.views);
-            data.push([title, article.views, color, null]);
-          }
+        topEditors.forEach((edit, i) => {
+          let title = edit.user_text.replace(/_/g, ' '); // make the _ into spaces
+          let color = myRainbow.colourAt(edit.edits);
+          data.push([title, edit.edits, color, null]);
 
         });
 
         console.log(data)
+        // data = data.sort(() => Math.random() - 0.5);
 
         this.setState({
-          topArticles: data,
+          topEdits: data,
           date: dateStr
         })
 
@@ -113,51 +112,51 @@ export default class TopHits extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        
+
         <p className="text-center" style={styles.title}>
-          Most popular wiki pages
+          Today's top editors
         </p>
         <p className="text-center" style={styles.subtitle}>
-          {`on the day of ${this.props.date}`}
+          {`on the day of ${this.state.date}`}
         </p>
 
 
-        {this.state.topArticles && <div className="col">
+        {this.state.topEdits && <div className="col">
 
           <Chart
-            chartType="BarChart"
+            chartType="ScatterChart"
             loader={<div>Loading Chart</div>}
-            data={this.state.topArticles}
+            data={this.state.topEdits}
             options={{
-              // title: `Most viewed articles on ${this.props.date}`,
+              // title: `Most viewed edits on ${this.props.date}`,
               width: '100%',
               height: 400,
+              backgroundColor: 'none',
               bar: { groupWidth: '80%' },
               legend: { position: 'none' },
               tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
               vAxis: {
                 textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
-                textPosition: 'in'
               },
               chartArea: { width: '100%', height: '100%' },
               // legend: { position: 'in' },
               // titlePosition: 'in', axisTitlesPosition: 'in',
-              hAxis: { 
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: '#B5C2DC' },
-                textPosition: 'in' 
+              hAxis: {
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+                textPosition: 'none'
               },
               // vAxis: { textPosition: 'in' }
             }}
 
-            // the event will register what was clicked and pop up a modal of the article, same as 
+            // the event will register what was clicked and pop up a modal of the edit, same as 
             chartEvents={[
               {
                 eventName: 'select',
                 callback: ({ chartWrapper }) => {
                   const chart = chartWrapper.getChart()
                   const selection = chart.getSelection()
-                  
-                  let newSearch = this.state.topArticles[selection[0].row+1][0];
+
+                  let newSearch = this.state.topEdits[selection[0].row + 1][0];
 
                   this.props.handleChange(newSearch);
                   this.props.handleSubmit();
@@ -168,7 +167,7 @@ export default class TopHits extends React.Component {
             rootProps={{ 'data-testid': '6' }}
           />
         </div>}
-        
+
       </div>
     )
   }
@@ -176,8 +175,9 @@ export default class TopHits extends React.Component {
 
 const styles = {
   container: {
-    padding: '30px',
-    paddingTop: '60px'
+
+    padding: '60px 20px 0px 20px',
+    backgroundColor: 'rgba(255,255,255,0.4)'
   },
   title: {
     fontFamily: 'Quicksand',

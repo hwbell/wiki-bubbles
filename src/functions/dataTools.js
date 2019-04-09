@@ -1,5 +1,8 @@
 
 
+const fetch = require('node-fetch');
+const { getCode } = require('country-list');
+
 // getSearchFormatDate(dateObj) takes a javascript Date obj and returns it in the wikipages 
 // format - i.e. '2015100100' being 0ct 01, 2015, 0hrs
 const getSearchFormatDate = (dateObj) => {
@@ -28,8 +31,22 @@ const getMidRangeFromBucket = (bucketStr) => {
   return (numbers[0] + numbers[1]) / 2;
 }
 
+const getPopulation = (country, countryData) => {
+
+  console.log(country);
+
+  for (let i = 0; i < countryData.length; i++) {
+    let thisCountry = countryData[i].country;
+    if (thisCountry === country) {
+      // console.log(countryData[i].population)
+      return countryData[i].population;
+    }
+
+  }
+}
 
 module.exports = {
   getMidRangeFromBucket,
-  getSearchFormatDate
+  getSearchFormatDate,
+  getPopulation
 }
