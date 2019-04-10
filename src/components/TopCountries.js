@@ -1,6 +1,10 @@
 import React from 'react';
 
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+// styling
+import '../App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+// for media queries
+import Media from 'react-media';
 
 // import the chart
 import { Chart } from 'react-google-charts';
@@ -20,12 +24,22 @@ const fetch = require('node-fetch');
 // this package is great! makes coloring so easy
 var Rainbow = require('rainbowvis.js');
 
+// get rid of the legend for mobile, it takes up too much room
+const legend = {
+  position: 'right',
+  alignment: 'center',
+  textStyle: {
+    fontName: 'Sarabun', bold: 0, fontSize: 14
+  }
+}
+
+const mobileLegend = 'none'
 
 export default class TopHits extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // 
+
     };
 
     this.renderPieChart = this.renderPieChart.bind(this);
@@ -82,7 +96,7 @@ export default class TopHits extends React.Component {
         let max = topCountries[0].views_ceil;
         let min = topCountries[topCountries.length - 1].views_ceil;
 
-        myRainbow.setNumberRange(0, max/3); // set range based on data
+        myRainbow.setNumberRange(0, max / 3); // set range based on data
         myRainbow.setSpectrum('#AED6F1', '#43289b');
 
         // just make an array for all colors - I think adding them with each group
@@ -118,7 +132,7 @@ export default class TopHits extends React.Component {
 
             // add to the colors array
             let color = myRainbow.colourAt(views);
-            colors.push('#'+color)
+            colors.push('#' + color)
           }
 
         });
@@ -139,7 +153,8 @@ export default class TopHits extends React.Component {
       });
   }
 
-  renderPieChart() {
+
+  renderPieChart(legend) {
     return (
       <div className="col" style={styles.chartHolder}>
 
@@ -150,15 +165,10 @@ export default class TopHits extends React.Component {
           options={{
             width: '100%',
             height: 400,
+            pieSliceText: 'label',
             backgroundColor: 'none',
             tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
-            legend: {
-              position: 'right',
-              alignment: 'center',
-              textStyle: {
-                fontName: 'Sarabun', bold: 0, fontSize: 14
-              }
-            },
+            legend: legend,
             colors: this.state.colors,
             chartArea: { width: '100%', height: '100%' },
           }}
@@ -186,7 +196,7 @@ export default class TopHits extends React.Component {
                 fontSize: 12,
                 color: '#222757'
               },
-              textPosition: 'in'
+              // textPosition: 'in'
             },
             width: '100%',
             height: 400,
@@ -201,6 +211,7 @@ export default class TopHits extends React.Component {
               colors: ['#AED6F1', '#43289b']
             },
             hAxis: {
+              baselineColor: 'white',
               scaleType: 'log',
               minValue: 0,
               title: 'population (millions)',
@@ -208,6 +219,7 @@ export default class TopHits extends React.Component {
               textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
             },
             vAxis: {
+              baselineColor: 'white',
               scaleType: 'mirrorLog',
               maxValue: 6000,
               title: 'page views (millions)',
@@ -233,7 +245,16 @@ export default class TopHits extends React.Component {
           Which countries view the most?
         </p>
 
-        {this.state.pieData && this.renderPieChart()}
+        {this.state.pieData &&
+          <Media query="(min-width: 599px)">
+            {matches =>
+              matches ? (
+                this.renderPieChart(legend)
+              ) : (
+                  this.renderPieChart(mobileLegend)
+                )
+            }
+          </Media>}
 
         <p className="text-center" style={styles.title}>
           How does population compare to page views?
@@ -267,8 +288,10 @@ const styles = {
     color: 'rgb(7, 100, 206)'
   },
   chartHolder: {
-    marginTop: '5vh',
-    marginBottom: '8vh'
+   margin: 0,
+   marginBottom: '5vh',
+   padding: 0,
+    // border: '1px solid black'
   }
 }
 

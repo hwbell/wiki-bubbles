@@ -168,7 +168,7 @@ export default class MainPage extends Component {
           <Div style={styles.searchContainer}>
 
             <p className="text-center" style={styles.title}>
-              Search the encyclopedia
+              Search the Encyclopedia
             </p>
 
             <Form className="row" style={styles.input} onSubmit={this.handleSubmit}>
@@ -203,15 +203,15 @@ export default class MainPage extends Component {
             date={this.state.date}
           />
 
-          <Hr id="topedits"></Hr>
+          <Hr id="topcountries"></Hr>
           
           <TopCountries />
 
-          <Hr id="topedits"></Hr>
+          <Hr id="topeditors"></Hr>
 
           <TopEdits />
 
-          <Hr id="topedits"></Hr>
+          <Hr></Hr>
 
         </div>
       </Container>
@@ -229,12 +229,11 @@ const styles = {
 
   },
   contentContainer: {
-    margin: '40px',
+    margin: '0px',
     marginTop: '0px'
   },
   searchContainer: {
-    padding: '30px',
-    paddingTop: '60px'
+    padding: '60px',
   },
   title: {
     fontFamily: 'Quicksand',

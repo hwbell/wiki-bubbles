@@ -75,7 +75,7 @@ export default class TopHits extends React.Component {
 
         // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
         // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topArticles = json.items[0].articles.slice(2, 20);
+        let topArticles = json.items[0].articles.slice(2, 12);
 
         // initalize rainbowvis to color each group dynamically
         var myRainbow = new Rainbow();
@@ -148,7 +148,7 @@ export default class TopHits extends React.Component {
               hAxis: { 
                 scaleType: 'mirrorLog',
                 minValue: 0,
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey' },
                 textPosition: 'in' 
               },
               // vAxis: { textPosition: 'in' }

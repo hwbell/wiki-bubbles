@@ -36,16 +36,17 @@ export default class TopEdits extends React.Component {
     // get today into the format for the url -- 2015100100 = 10/01/2015. We'll leave the hours as 00.
     const today = new Date();
 
-    // do two days since they don't have data yet for today, and sometimes don't have it for yesterday either
-    today.setDate(today.getDate() - 2);
+    // do last month since it seems there isn't data for the current month
+    today.setMonth(today.getMonth() - 1);
     let date = getSearchFormatDate(today);
-    let dateStr = date.slice(0, 4) + '/' + date.slice(4, 6) + '/' + date.slice(6, 8);
+    let dateDisplay = date.slice(4, 6) + '-' + date.slice(0, 4);
+    let dateStr = date.slice(0, 4) + '/' + date.slice(4, 6) + '/all-days';
 
     // a simple proxy is needed to avoid cors issues. I created one cloned from the 
     // cors-anywhere.git project
     // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/editors/top-by-edits/en.wikipedia/user/all-page-types/2018/01/01`;
-    // console.log(searchUrl)
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/editors/top-by-edits/en.wikipedia/user/all-page-types/${dateStr}`;
+    console.log(searchUrl)
 
     fetch(searchUrl, {
       method: 'GET',
@@ -73,22 +74,27 @@ export default class TopEdits extends React.Component {
         let min = topEditors[topEditors.length - 1].edits;
         // console.log(typeof (min), typeof (max))
 
+        // initialize the color spectrum using rainbowvis
+        let colors = [];
         myRainbow.setNumberRange(min, max); // set range based on data
         myRainbow.setSpectrum('#BBDEFB', '#FFCCFF');
 
         topEditors.forEach((edit, i) => {
           let title = edit.user_text.replace(/_/g, ' '); // make the _ into spaces
           let color = myRainbow.colourAt(edit.edits);
+          colors.push('#' + color);
           data.push([title, edit.edits]);
 
         });
 
-        // console.log(data)
+        console.log(colors)
         // data = data.sort(() => Math.random() - 0.5);
 
         this.setState({
           topEdits: data,
-          date: dateStr
+          date: dateStr,
+          dateDisplay,
+          colors
         })
 
       })
@@ -104,10 +110,10 @@ export default class TopEdits extends React.Component {
       <div style={styles.container}>
 
         <p className="text-center" style={styles.title}>
-          Today's top editors
+          Wikipedia's top editors
         </p>
         <p className="text-center" style={styles.subtitle}>
-          {`${this.state.date}`}
+          {`month of ${this.state.dateDisplay}`}
         </p>
 
 
@@ -115,9 +121,13 @@ export default class TopEdits extends React.Component {
         {this.state.topEdits &&
 
           <div className="col" style={styles.chartHolder}>
-            <p className="float-right" style={styles.winner}>
-              {`${this.state.topEdits[1][0]} is killing it!`}
-            </p>
+
+            {/* <div className="float-right"> */}
+              {/* <p className="" style={styles.winner}>
+                {`${this.state.topEdits[1][0]} is king`}
+              </p> */}
+            {/* </div> */}
+
             <Chart
               chartType="Histogram"
               loader={<div>Loading Chart</div>}
@@ -131,7 +141,9 @@ export default class TopEdits extends React.Component {
                 legend: { position: 'none' },
                 tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
                 vAxis: {
-                  ticks: [15, 20, 25],
+                  baselineColor: 'white',
+                  maxValue: 20,
+                  ticks: [],
                   textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
                   textPosition: 'in'
                 },
@@ -139,10 +151,12 @@ export default class TopEdits extends React.Component {
                 // legend: { position: 'in' },
                 // titlePosition: 'in', axisTitlesPosition: 'in',
                 hAxis: {
+                  baselineColor: 'white',
                   title: 'edits',
                   titleTextStyle: { fontName: 'Sarabun', bold: 0, italic: 0, fontSize: 16, color: 'grey' },
-                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey' },
                 },
+                colors: ['#AED6F1'],
                 // vAxis: { textPosition: 'in' }
               }}
 
@@ -188,19 +202,27 @@ const styles = {
     fontFamily: 'Quicksand',
     fontSize: 18,
     marginTop: '10px',
-    marginBottom: '25px',
+    // marginBottom: '25px',
     color: 'rgb(7, 100, 206)'
   },
   winner: {
+    top: '60%',
+    left: '80%',
+    position: 'absolute',
     fontFamily: 'Quicksand',
     fontSize: 18,
     fontWeight: 600,
-    marginTop: '10px',
     color: 'rgb(7, 100, 206)'
   },
+  icon: {
+    fontSize: 30,
+    color: 'grey'
+  },
   chartHolder: {
-    marginTop: '5vh',
+    // border: '1px solid',
+    // marginTop: '5vh',
     marginBottom: '8vh'
   }
+
 }
 

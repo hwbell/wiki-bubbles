@@ -88,16 +88,20 @@ input:-webkit-autofill:active  {
   font-family: Quicksand;
   transition: all 0.3s ease;
 }
-.nav-link {
+.dropdown {
+  transition: all 0.3s ease;
+}
+.nav-link, .dropdown {
   color: rgb(7, 100, 206);
   font-weight: 600;
 }
 .nav-title-icon, .nav-title-text {
   color: black;
 }
-.nav-link:hover, .nav-title-icon:hover {
+.nav-link:hover, .nav-title-icon:hover, .dropdown:hover {
   color: rgb(132, 142, 158);
 }
+
 /*  */
 
 

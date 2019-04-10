@@ -3,15 +3,81 @@ import React from 'react';
 // styling
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+// for media queries
+import Media from 'react-media';
 
 import AnchorLink from 'react-anchor-link-smooth-scroll'
+import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 export default class Navigator extends React.Component {
   constructor(props) {
     super(props);
+    this.renderLinks = this.renderLinks.bind(this);
+    this.renderDropDown = this.renderDropDown.bind(this);
+    this.toggle = this.toggle.bind(this);
+
     this.state = {
       // 
     };
+
+  }
+
+  renderLinks() {
+    return (
+      <div className="col-8">
+        <div className="row" style={styles.linkHolder}>
+          <div className="col-3">
+            <AnchorLink style={styles.navLink} href="#search" className="nav-link">Search</AnchorLink>
+          </div>
+          <div className="col-3">
+            <AnchorLink style={styles.navLink} href="#tophits" className="nav-link">Trending</AnchorLink>
+          </div>
+          <div className="col-3">
+            <AnchorLink style={styles.navLink} href="#topcountries" className="nav-link">Countries</AnchorLink>
+          </div>
+          <div className="col-3">
+            <AnchorLink style={styles.navLink} href="#topeditors" className="nav-link">Editors</AnchorLink>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderDropDown() {
+    return (
+      <div className="col-8">
+        <Dropdown className="float-right" style={styles.dropDownMenu} 
+          isOpen={this.state.dropdownOpen} 
+          toggle={this.toggle}>
+          
+          <DropdownToggle color='link'>
+            <i style={styles.dropDownIcon} className="dropdown fas fa-align-justify"></i>
+          </DropdownToggle>
+
+          <DropdownMenu>
+            <DropdownItem >
+              <AnchorLink style={styles.dropDownLink} href="#search" className="nav-link">Search</AnchorLink>
+            </DropdownItem>
+            <DropdownItem >
+              <AnchorLink style={styles.dropDownLink} href="#tophits" className="nav-link">Trending</AnchorLink>
+            </DropdownItem>
+            <DropdownItem >
+              <AnchorLink style={styles.dropDownLink} href="#topcountries" className="nav-link">Countries</AnchorLink>
+            </DropdownItem>
+            <DropdownItem >
+              <AnchorLink style={styles.dropDownLink} href="#topeditors" className="nav-link">Editors</AnchorLink>
+            </DropdownItem>
+          </DropdownMenu>
+        
+        </Dropdown>
+      </div>
+    )
+  }
+
+  toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    })
   }
 
   componentDidMount() {
@@ -39,16 +105,16 @@ export default class Navigator extends React.Component {
             </div>
           </div>
 
-          <div className="col-8">
-            <div className="row" style={styles.linkHolder}>
-              <div className="col-6">
-                <AnchorLink style={styles.navLink} href="#search" className="nav-link">Search</AnchorLink>
-              </div>
-              <div className="col-6">
-                <AnchorLink style={styles.navLink} href="#tophits" className="nav-link">Trending</AnchorLink>
-              </div>
-            </div>
-          </div>
+          <Media query="(max-width: 599px)">
+            {matches =>
+              matches ? (
+                this.renderDropDown()
+              ) : (
+                  this.renderLinks()
+                )
+            }
+          </Media>
+
         </div>
 
 
@@ -74,8 +140,9 @@ const styles = {
     width: '180px'
   },
   icon: {
-    fontSize: '40px'
+    fontSize: 'calc(40px + 1vw)'
   },
+  
   title: {
     fontSize: 'calc(14px + 1vw)',
     padding: '0px',
@@ -84,15 +151,22 @@ const styles = {
   },
   linkHolder: {
     // border: '1px solid black',
-    width: '180px',
     margin: 'auto'
   },
   navLink: {
-    // border: '1px solid black',
     textAlign: 'left',
-    // width: '60px',
     fontSize: 'calc(16px + 0.5vw)',
-    // padding: 0,
     marginRight: '10px',
+  },
+  dropDownIcon: {
+    fontSize: 'calc(34px + 1vw)',
+    // color: 'rgb(7, 100, 206)'
+  },
+  dropDownMenu: {
+    marginRight: '2vw'
+  },
+  dropDownLink: {
+    textAlign: 'left',
+    fontSize: 'calc(14px + 0.5vw)',
   }
 }
