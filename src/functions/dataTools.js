@@ -33,7 +33,7 @@ const getMidRangeFromBucket = (bucketStr) => {
 
 const getPopulation = (country, countryData) => {
 
-  console.log(country);
+  // console.log(country);
 
   for (let i = 0; i < countryData.length; i++) {
     let thisCountry = countryData[i].country;

@@ -44,8 +44,8 @@ export default class TopEdits extends React.Component {
     // a simple proxy is needed to avoid cors issues. I created one cloned from the 
     // cors-anywhere.git project
     // const proxyUrl = 'https://blooming-hamlet-51081.herokuapp.com/';
-    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/editors/top-by-edits/en.wikipedia/user/all-page-types/2018/01/all-days`;
-    console.log(searchUrl)
+    const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/editors/top-by-edits/en.wikipedia/user/all-page-types/2018/01/01`;
+    // console.log(searchUrl)
 
     fetch(searchUrl, {
       method: 'GET',
@@ -53,27 +53,17 @@ export default class TopEdits extends React.Component {
     })
       .then(res => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
 
         // set up format for the google chart - from react-google-charts docs
         let data = [
-          [
-            'Wiki Page',
-            'edits',
-            { role: 'style' },
-            {
-              sourceColumn: 0,
-              role: 'annotation',
-              type: 'string',
-              calc: 'stringify',
-            },
-          ]
+          ['User', 'Edits'],
           // data groups added here as ['Title', value, '#hexcolor', null],
         ]
 
         // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
         // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topEditors = json.items[0].results[0].top.slice(2, 14);
+        let topEditors = json.items[0].results[0].top.slice(2, 52);
 
         // initalize rainbowvis to color each group dynamically
         var myRainbow = new Rainbow();
@@ -89,11 +79,11 @@ export default class TopEdits extends React.Component {
         topEditors.forEach((edit, i) => {
           let title = edit.user_text.replace(/_/g, ' '); // make the _ into spaces
           let color = myRainbow.colourAt(edit.edits);
-          data.push([title, edit.edits, color, null]);
+          data.push([title, edit.edits]);
 
         });
 
-        console.log(data)
+        // console.log(data)
         // data = data.sort(() => Math.random() - 0.5);
 
         this.setState({
@@ -117,56 +107,64 @@ export default class TopEdits extends React.Component {
           Today's top editors
         </p>
         <p className="text-center" style={styles.subtitle}>
-          {`on the day of ${this.state.date}`}
+          {`${this.state.date}`}
         </p>
 
 
-        {this.state.topEdits && <div className="col">
 
-          <Chart
-            chartType="ScatterChart"
-            loader={<div>Loading Chart</div>}
-            data={this.state.topEdits}
-            options={{
-              // title: `Most viewed edits on ${this.props.date}`,
-              width: '100%',
-              height: 400,
-              backgroundColor: 'none',
-              bar: { groupWidth: '80%' },
-              legend: { position: 'none' },
-              tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
-              vAxis: {
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
-              },
-              chartArea: { width: '100%', height: '100%' },
-              // legend: { position: 'in' },
-              // titlePosition: 'in', axisTitlesPosition: 'in',
-              hAxis: {
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
-                textPosition: 'none'
-              },
-              // vAxis: { textPosition: 'in' }
-            }}
+        {this.state.topEdits &&
 
-            // the event will register what was clicked and pop up a modal of the edit, same as 
-            chartEvents={[
-              {
-                eventName: 'select',
-                callback: ({ chartWrapper }) => {
-                  const chart = chartWrapper.getChart()
-                  const selection = chart.getSelection()
-
-                  let newSearch = this.state.topEdits[selection[0].row + 1][0];
-
-                  this.props.handleChange(newSearch);
-                  this.props.handleSubmit();
+          <div className="col" style={styles.chartHolder}>
+            <p className="float-right" style={styles.winner}>
+              {`${this.state.topEdits[1][0]} is killing it!`}
+            </p>
+            <Chart
+              chartType="Histogram"
+              loader={<div>Loading Chart</div>}
+              data={this.state.topEdits}
+              options={{
+                // title: `Most viewed edits on ${this.props.date}`,
+                width: '100%',
+                height: 400,
+                backgroundColor: 'none',
+                bar: { groupWidth: '80%' },
+                legend: { position: 'none' },
+                tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
+                vAxis: {
+                  ticks: [15, 20, 25],
+                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
+                  textPosition: 'in'
                 },
-              },
-            ]}
-            // For tests
-            rootProps={{ 'data-testid': '6' }}
-          />
-        </div>}
+                chartArea: { width: '100%', height: '80%' },
+                // legend: { position: 'in' },
+                // titlePosition: 'in', axisTitlesPosition: 'in',
+                hAxis: {
+                  title: 'edits',
+                  titleTextStyle: { fontName: 'Sarabun', bold: 0, italic: 0, fontSize: 16, color: 'grey' },
+                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+                },
+                // vAxis: { textPosition: 'in' }
+              }}
+
+              // the event will register what was clicked and pop up a modal of the edit, same as 
+              chartEvents={[
+                {
+                  eventName: 'select',
+                  callback: ({ chartWrapper }) => {
+                    const chart = chartWrapper.getChart()
+                    const selection = chart.getSelection()
+
+                    let newSearch = this.state.topEdits[selection[0].row + 1][0];
+
+                    this.props.handleChange(newSearch);
+                    this.props.handleSubmit();
+                  },
+                },
+              ]}
+              // For tests
+              rootProps={{ 'data-testid': '6' }}
+            />
+          </div>}
 
       </div>
     )
@@ -192,6 +190,17 @@ const styles = {
     marginTop: '10px',
     marginBottom: '25px',
     color: 'rgb(7, 100, 206)'
+  },
+  winner: {
+    fontFamily: 'Quicksand',
+    fontSize: 18,
+    fontWeight: 600,
+    marginTop: '10px',
+    color: 'rgb(7, 100, 206)'
+  },
+  chartHolder: {
+    marginTop: '5vh',
+    marginBottom: '8vh'
   }
 }
 

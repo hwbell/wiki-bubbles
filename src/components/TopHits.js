@@ -53,7 +53,9 @@ export default class TopHits extends React.Component {
     })
       .then(res => res.json())
       .then((json) => {
-        // console.log(json);
+
+        console.log('top articles: ')
+        console.log(json);
 
         // set up format for the google chart - from react-google-charts docs
         let data = [
@@ -73,7 +75,7 @@ export default class TopHits extends React.Component {
 
         // lose the first 2 as its always 'Main Page' and 'Special:Search', and just get the top 11,
         // from which we'll lose the Special:CreateAccount page(below), leaving the top 10
-        let topArticles = json.items[0].articles.slice(2, 14);
+        let topArticles = json.items[0].articles.slice(2, 20);
 
         // initalize rainbowvis to color each group dynamically
         var myRainbow = new Rainbow();
@@ -81,14 +83,13 @@ export default class TopHits extends React.Component {
         // get min and max
         let max = topArticles[0].views;
         let min = topArticles[topArticles.length - 1].views;
-        console.log(typeof (min), typeof (max))
 
         myRainbow.setNumberRange(min, max); // set range based on data
-        myRainbow.setSpectrum('#BBDEFB', '#FFCCFF');
+        myRainbow.setSpectrum('#AED6F1', '#43289b');
 
         topArticles.forEach((article, i) => {
           let title = article.article.replace(/_/g, ' '); // make the _ into spaces
-          if (title !== 'Special:CreateAccount' && title !== 'Special:Search' && i < 10) {
+          if (title !== 'Special:CreateAccount' && title !== 'Special:Search' && i < 16) {
             let color = myRainbow.colourAt(article.views);
             data.push([title, article.views, color, null]);
           }
@@ -118,7 +119,7 @@ export default class TopHits extends React.Component {
           Most popular Wiki pages
         </p>
         <p className="text-center" style={styles.subtitle}>
-          {`on the day of ${this.state.date}`}
+          {`${this.state.date}`}
         </p>
 
 
@@ -137,13 +138,16 @@ export default class TopHits extends React.Component {
               legend: { position: 'none' },
               tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
               vAxis: {
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: '#222757', textShadow: 'none' },
                 textPosition: 'in'
               },
               chartArea: { width: '100%', height: '100%' },
+              dataOpacity: 0.5,
               // legend: { position: 'in' },
               // titlePosition: 'in', axisTitlesPosition: 'in',
               hAxis: { 
+                scaleType: 'mirrorLog',
+                minValue: 0,
                 textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
                 textPosition: 'in' 
               },

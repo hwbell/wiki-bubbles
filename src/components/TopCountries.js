@@ -15,8 +15,11 @@ import countryData from '../assets/json/countries';
 
 // these npm packages are very useful
 const { getName } = require('country-list');
-var Rainbow = require('rainbowvis.js');
 const fetch = require('node-fetch');
+
+// this package is great! makes coloring so easy
+var Rainbow = require('rainbowvis.js');
+
 
 export default class TopHits extends React.Component {
   constructor(props) {
@@ -48,7 +51,7 @@ export default class TopHits extends React.Component {
     let dateStr = date.slice(0, 4) + '/' + date.slice(4, 6);
 
     const searchUrl = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top-by-country/en.wikipedia/all-access/2015/10`;
-    console.log(searchUrl)
+    // console.log(searchUrl)
 
     fetch(searchUrl, {
       method: 'GET',
@@ -56,7 +59,7 @@ export default class TopHits extends React.Component {
     })
       .then(res => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
 
         // set up format for the google chart - from react-google-charts docs
         let pieData = [
@@ -69,7 +72,23 @@ export default class TopHits extends React.Component {
         ]
 
         let topCountries = json.items[0].countries.slice(0, 16);
-        console.log(topCountries)
+        // console.log(topCountries)
+
+        // make an array of colors for the pie graph with rainbowvis
+        // initalize rainbowvis to color each group dynamically
+        var myRainbow = new Rainbow();
+
+        // get min and max
+        let max = topCountries[0].views_ceil;
+        let min = topCountries[topCountries.length - 1].views_ceil;
+
+        myRainbow.setNumberRange(0, max/3); // set range based on data
+        myRainbow.setSpectrum('#AED6F1', '#43289b');
+
+        // just make an array for all colors - I think adding them with each group
+        // doesn't work on the pie chart as it does in the bar chart
+        let colors = [];
+
         topCountries.forEach((result, i) => {
 
           if (result.country !== '--') {
@@ -79,39 +98,32 @@ export default class TopHits extends React.Component {
             let perCapita = views / population;
 
             // we'll display in millions for views and population
-            let adjustedViews = views / 1000000; 
-            let adjustedPopulation = population / 1000000; 
+            let adjustedViews = views / 1000000;
+            let adjustedPopulation = population / 1000000;
 
             // Iran seems to be the one country on the high views list that has 
             // too long of a name, so just fix it here.
             if (title === 'Iran, Islamic Republic of') {
               title = 'Iran';
-            } 
+            }
 
-            console.log(title)
-            console.log(population)
-            console.log(views)
-            console.log(perCapita)
+            // console.log(title)
+            // console.log(population)
+            // console.log(views)
+            // console.log(perCapita)
 
-
+            // add to the data array for each chart
             pieData.push([title, views]);
             bubbleData.push([title, adjustedPopulation, adjustedViews, perCapita]);
+
+            // add to the colors array
+            let color = myRainbow.colourAt(views);
+            colors.push('#'+color)
           }
 
         });
 
-        const colors = [
-          '#F8BBD0',
-          '#E1BEE7',
-          '#D1C4E9',
-          '#9FA8DA',
-          '#90CAF9',
-          '#81D4FA',
-          '#80DEEA',
-          '#80CBC4',
-          '#A5D6A7',
-          '#C5E1A5',
-        ];
+        console.log(colors)
 
         this.setState({
           pieData,
@@ -179,17 +191,14 @@ export default class TopHits extends React.Component {
             width: '100%',
             height: 400,
             backgroundColor: 'none',
-            chartArea: { width: '80%', height: '70%' },
+            chartArea: { width: '90%', height: '70%' },
             colorAxis: {
               legend: {
                 textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' }
               },
               minValue: 0,
-              maxValue: 15,
-              colors: ['#4FC3F7', '#E91E63']
-            },
-            sizeAxis: {
-              maxValue: 20
+              maxValue: 12,
+              colors: ['#AED6F1', '#43289b']
             },
             hAxis: {
               scaleType: 'log',
@@ -204,8 +213,9 @@ export default class TopHits extends React.Component {
               title: 'page views (millions)',
               titleTextStyle: { fontName: 'Sarabun', italic: 0, bold: 0, fontSize: 16, color: 'grey' },
               textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+              textPosition: 'in'
             },
-            
+
           }}
           rootProps={{ 'data-testid': '2' }}
         />
@@ -214,7 +224,7 @@ export default class TopHits extends React.Component {
   }
 
   render() {
-    console.log(this.state.colors)
+    // console.log(this.state.colors)
 
     return (
       <div style={styles.container}>
@@ -258,7 +268,7 @@ const styles = {
   },
   chartHolder: {
     marginTop: '5vh',
-    marginBottom: '5vh'
+    marginBottom: '8vh'
   }
 }
 
