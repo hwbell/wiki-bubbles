@@ -289,7 +289,7 @@ const styles = {
   },
   chartHolder: {
    margin: 0,
-   marginBottom: '5vh',
+   marginBottom: '10vh',
    padding: 0,
     // border: '1px solid black'
   }
