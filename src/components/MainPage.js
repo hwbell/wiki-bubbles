@@ -2,18 +2,12 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 // components 
-import { Button, Form, FormGroup, Input } from 'reactstrap';
-import ModalButton from './ModalButton';
 import TopHits from './TopHits';
 import SiteInformation from './SiteInformation';
+import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
 import TopCountries from './TopCountries';
 import TopEdits from './TopEdits';
-
-// functions
-import {
-  getSearchFormatDate
-} from '../functions/dataTools'
 
 // styling
 import '../App.css';
@@ -68,7 +62,6 @@ export default class MainPage extends Component {
 
   // for the titles and snippets
   getSearchResults(search) {
-    // const search = 'mogget';
     const targetUrl = "https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&generator=search&prop=extracts&exchars=450&explaintext=1&exlimit=10&exintro=1&format=json&sortby=relevance&origin=*&gsrsearch="
     const searchUrl = targetUrl + search;
 
@@ -127,6 +120,7 @@ export default class MainPage extends Component {
 
   }
 
+  // this will fire whenever the user types
   handleChange(value) {
 
     this.setState({
@@ -142,6 +136,7 @@ export default class MainPage extends Component {
     });
   }
 
+  // this will fire whenever the user enters the search
   handleSubmit(e) {
     if (e) { e.preventDefault(); }
     this.getSearchResults(this.state.search);
@@ -167,24 +162,14 @@ export default class MainPage extends Component {
 
           <Div style={styles.searchContainer}>
 
-            <p className="text-center" style={styles.title}>
-              Search the Encyclopedia
-            </p>
+            {/* the search form */}
+            <SearchInput 
+              search={this.state.search}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+            />
 
-            <Form className="row" style={styles.input} onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Input className="input" style={styles.searchInput} type="text" name="name" id="contactname" placeholder={this.state.search}
-                  onChange={(e) => this.handleChange(`${e.target.value}`)}
-                />
-              </FormGroup>
-
-              <Button color="link"
-                type="submit"
-                style={styles.button}>
-                <i className={`fas fa-search-plus`} style={styles.icon}></i>
-              </Button>
-            </Form>
-
+            {/* the results */}
             {this.state.pages &&
 
               <SearchResults
@@ -197,6 +182,7 @@ export default class MainPage extends Component {
 
           <Hr id="tophits"></Hr>
 
+          {/* trending pages */}
           <TopHits
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
@@ -205,10 +191,12 @@ export default class MainPage extends Component {
 
           <Hr id="topcountries"></Hr>
           
+          {/* country data */}
           <TopCountries />
 
           <Hr id="topeditors"></Hr>
 
+          {/* top editors */}
           <TopEdits />
 
           <Hr></Hr>
