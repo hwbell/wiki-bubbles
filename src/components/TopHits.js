@@ -114,7 +114,7 @@ export default class TopHits extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        
+
         <p className="text-center" style={styles.title}>
           Most popular Wiki pages
         </p>
@@ -134,12 +134,11 @@ export default class TopHits extends React.Component {
               legend: 'none',
               chartArea: { top: 0, right: 0, width: '80%', height: '90%' },
               vAxis: {
-                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey', textShadow: 'none',
-                  float: 'right' },
-                },
-                hAxis: {
-                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
-                },
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 9, color: 'grey', textShadow: 'none' },
+              },
+              hAxis: {
+                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+              },
             }}
 
             // the event will register what was clicked and pop up a modal of the article, same as 
@@ -147,13 +146,15 @@ export default class TopHits extends React.Component {
               {
                 eventName: 'select',
                 callback: ({ chartWrapper }) => {
-                  const chart = chartWrapper.getChart()
-                  const selection = chart.getSelection()
-                  
-                  let newSearch = this.state.topArticles[selection[0].row+1][0];
+                  // let the user see the popup data, then search
+                  setTimeout(() => {
+                    const chart = chartWrapper.getChart()
+                    const selection = chart.getSelection()
+                    let newSearch = this.state.topArticles[selection[0].row + 1][0];
 
-                  this.props.handleChange(newSearch);
-                  this.props.handleSubmit();
+                    this.props.handleChange(newSearch);
+                    this.props.handleSubmit();
+                  }, 1200)
                 },
               },
             ]}
@@ -161,7 +162,7 @@ export default class TopHits extends React.Component {
             rootProps={{ 'data-testid': '6' }}
           />
         </div>}
-        
+
       </div>
     )
   }
@@ -169,7 +170,6 @@ export default class TopHits extends React.Component {
 
 const styles = {
   container: {
-
     padding: '60px 20px 0px 20px',
     backgroundColor: 'rgba(255,255,255,0.4)'
   },

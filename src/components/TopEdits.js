@@ -155,7 +155,7 @@ export default class TopEdits extends React.Component {
                   titleTextStyle: { fontName: 'Sarabun', bold: 0, italic: 0, fontSize: 16, color: 'grey' },
                   textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey' },
                 },
-                colors: ['#AED6F1'],
+                colors: ['#AED6F1', 'black', 'blue'],
                 // vAxis: { textPosition: 'in' }
               }}
 

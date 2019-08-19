@@ -219,6 +219,10 @@ const styles = {
     marginTop: '0px'
   },
   searchContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: '20px',
   },
   title: {

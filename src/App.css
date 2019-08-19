@@ -134,10 +134,14 @@ input:-webkit-autofill:active {
 }
 /*  */
 
-/* in the modal */
-
+/* Modals */
+/* this setting prevents the jumpy shift when the scrollbar disappears on modal popup */
+body.modal-open {
+  overflow: visible;
+  padding-right: 10px !important;
+}
 .modal-content {
-  margin: 10px auto;
+  /* margin: 10px auto; */
 }
 .fa-times {
   color: rgb(7, 100, 206);

@@ -81,6 +81,7 @@ export default class SearchResults extends Component {
 const styles = {
   
   searchResults: {
+    maxWidth: '750px',
     marginBottom: '40px'
   },
   result: {

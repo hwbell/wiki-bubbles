@@ -83,7 +83,7 @@ class ModalButton extends React.Component {
 
     return (
       <Container>
-        <Modal className='modal-lg'
+        <Modal centered={true}
           style={styles.modal}
           isOpen={this.props.modalOpen}
           toggle={this.props.toggle}>
@@ -159,7 +159,7 @@ class ModalButton extends React.Component {
 
 const styles = {
   modal: {
-    width: '100%'
+    // width: '100%'
   },
   icon: {
     position: 'absolute',

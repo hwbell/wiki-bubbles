@@ -131,9 +131,8 @@ const styles = {
     backgroundColor: 'white'
   },
   titleHolder: {
-    // width: '100%',
-    // margin: 'auto auto',
-    marginTop: '15px'
+    maxWidth: '750px',
+    margin: '15px auto'
   },
   combinedTitle: {
     marginLeft: '30px',
