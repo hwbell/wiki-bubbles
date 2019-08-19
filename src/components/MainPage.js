@@ -57,9 +57,6 @@ export default class MainPage extends Component {
     this.getSearchResults(this.state.search);
   }
 
-
-
-
   // for the titles and snippets
   getSearchResults(search) {
     const targetUrl = "https://en.wikipedia.org/w/api.php?action=query&meta=siteinfo&siprop=statistics&generator=search&prop=extracts&exchars=450&explaintext=1&exlimit=10&exintro=1&format=json&sortby=relevance&origin=*&gsrsearch="
@@ -143,6 +140,7 @@ export default class MainPage extends Component {
   }
 
   render() {
+    console.log(this.state.pages)
 
     return (
       // convers the whole screen
@@ -221,7 +219,7 @@ const styles = {
     marginTop: '0px'
   },
   searchContainer: {
-    padding: '60px',
+    padding: '20px',
   },
   title: {
     fontFamily: 'Quicksand',

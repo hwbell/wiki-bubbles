@@ -84,13 +84,13 @@ export default class SiteInformation extends React.Component {
 const styles = {
   container: {
     width: '100%',
-    margin: '60px'
+    // margin: '60px'
     // border: '1px solid black'
   },
   infoContainer: {
     // border: '1px solid black',
-    width: '90%',
-    width: '100%'
+    width: '100%',
+    padding: '20px'
   },
   title: {
     fontFamily: 'Quicksand',

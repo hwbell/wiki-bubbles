@@ -65,7 +65,7 @@ export default class PieGraph extends React.Component {
 const styles = {
   container: {
     minWidth: '300px',
-    margin: '20px auto'
+    margin: 'auto 20px'
   },
   iconHolder: {
     // border: '1px solid black',
@@ -73,7 +73,7 @@ const styles = {
     margin: '2vw',
   },
   icon: {
-    fontSize: 'calc(40px + 1vw)',
+    fontSize: 'calc(30px + 1vw)',
     // border: '1px solid black',
     // width: '100px'
     // margin: '15px'

@@ -120,13 +120,12 @@ export default class TopEdits extends React.Component {
 
         {this.state.topEdits &&
 
-          <div className="col" style={styles.chartHolder}>
+          <div className="" style={styles.chartHolder}>
 
-            {/* <div className="float-right"> */}
-              {/* <p className="" style={styles.winner}>
-                {`${this.state.topEdits[1][0]} is king`}
-              </p> */}
-            {/* </div> */}
+          
+              <p className="" style={styles.winner}>
+                <strong>{`${this.state.topEdits[1][0]}`}</strong>{` is on top with ${this.state.topEdits[1][1]} edits!`}
+              </p>
 
             <Chart
               chartType="Histogram"
@@ -147,7 +146,7 @@ export default class TopEdits extends React.Component {
                   textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey', textShadow: 'none' },
                   textPosition: 'in'
                 },
-                chartArea: { width: '100%', height: '80%' },
+                chartArea: { top: 0, width: '100%', height: '80%' },
                 // legend: { position: 'in' },
                 // titlePosition: 'in', axisTitlesPosition: 'in',
                 hAxis: {
@@ -161,20 +160,20 @@ export default class TopEdits extends React.Component {
               }}
 
               // the event will register what was clicked and pop up a modal of the edit, same as 
-              chartEvents={[
-                {
-                  eventName: 'select',
-                  callback: ({ chartWrapper }) => {
-                    const chart = chartWrapper.getChart()
-                    const selection = chart.getSelection()
+              // chartEvents={[
+              //   {
+              //     eventName: 'select',
+              //     callback: ({ chartWrapper }) => {
+              //       const chart = chartWrapper.getChart()
+              //       const selection = chart.getSelection()
 
-                    let newSearch = this.state.topEdits[selection[0].row + 1][0];
+              //       let newSearch = this.state.topEdits[selection[0].row + 1][0];
 
-                    this.props.handleChange(newSearch);
-                    this.props.handleSubmit();
-                  },
-                },
-              ]}
+              //       this.props.handleChange(newSearch);
+              //       this.props.handleSubmit();
+              //     },
+              //   },
+              // ]}
               // For tests
               rootProps={{ 'data-testid': '6' }}
             />
@@ -206,12 +205,9 @@ const styles = {
     color: 'rgb(7, 100, 206)'
   },
   winner: {
-    top: '60%',
-    left: '80%',
-    position: 'absolute',
     fontFamily: 'Quicksand',
-    fontSize: 18,
-    fontWeight: 600,
+    fontSize: 16,
+    // fontWeight: 600,
     color: 'rgb(7, 100, 206)'
   },
   icon: {
@@ -219,9 +215,11 @@ const styles = {
     color: 'grey'
   },
   chartHolder: {
-    // border: '1px solid',
-    // marginTop: '5vh',
-    marginBottom: '8vh'
+    marginBottom: '8vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 
 }

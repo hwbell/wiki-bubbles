@@ -143,27 +143,11 @@ const styles = {
     width: '100%'
   },
 
-  modal: {
-    width: '100%',
-    // margin: '50px auto'
-  },
-  title: {
-    fontSize: '26px'
-  },
   button: {
-    margin: '4px 0px',
+    margin: '0px',
+    padding: '0px',
     textDecoration: 'none',
   },
-  modalDescription: {
-    // margin: '10px 15px',
-    fontSize: 16,
-  },
-  image: {
-    width: '100%',
-  },
-  link: {
-    color: 'whitesmoke',
-  }
 }
 
 export default ModalButton;

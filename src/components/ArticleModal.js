@@ -53,17 +53,6 @@ class ModalButton extends React.Component {
 
   }
 
-  componentDidMount() {
-
-  }
-
-  // componentWillReceiveProps(nextProps){
-  //   if(nextProps.pages!==this.props.someValue){
-  //     //Perform some operation
-  //     this.setState({someState: someValue });
-  //   }
-  // }
-
   onExiting() {
     this.animating = true;
   }
@@ -101,11 +90,13 @@ class ModalButton extends React.Component {
 
           <ModalHeader>
             <p style={styles.title}>{this.props.title}</p>
+            <i className="fas fa-times" style={styles.icon}
+              onClick={this.props.toggle}></i>
           </ModalHeader>
 
           <ModalBody>
 
-            <p style={styles.modalDescription}>{this.props.extract}</p>
+            {/* <p style={styles.modalDescription}>{this.props.extract}</p> */}
 
             <a style={styles.modalLink} className="link"
               target="_blank"
@@ -149,6 +140,7 @@ class ModalButton extends React.Component {
             :
             <ModalBody>
               <Div style={{ height: '200px' }}></Div>
+              <p>Unable to fetch images</p>
             </ModalBody>}
 
           <ModalBody>
@@ -156,7 +148,7 @@ class ModalButton extends React.Component {
           </ModalBody>
 
           <ModalFooter style={styles.footer}>
-            <hr></hr>
+            <Button style={{fontSize: '14px'}} onClick={this.props.toggle}>close</Button>
           </ModalFooter>
 
         </Modal>
@@ -169,23 +161,24 @@ const styles = {
   modal: {
     width: '100%'
   },
-
+  icon: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px'
+  },
   title: {
-    fontSize: '26px'
+    fontSize: '20px'
   },
   modalLink: {
-    // margin: '10px 15px',
-    // fontWeight: 600,
-    fontSize: 16,
+    fontSize: '14px',
     textDecoration: 'none',
-    // color: 'rgb(7, 100, 206)'
   },
-  modalDesription: {
-    // margin: '10px 15px',
-    fontSize: 16,
+  modalDescription: {
+    fontSize: '14px',
   },
   image: {
     width: '100%',
+    // minHeight: '400px'
   },
   footer: {
     marginTop: '50px'

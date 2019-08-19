@@ -130,28 +130,16 @@ export default class TopHits extends React.Component {
             loader={<div>Loading Chart</div>}
             data={this.state.topArticles}
             options={{
-              // title: `Most viewed articles on ${this.props.date}`,
-              width: '100%',
-              height: 400,
               backgroundColor: 'none',
-              bar: { groupWidth: '80%' },
-              legend: { position: 'none' },
-              tooltip: { textStyle: { color: 'rgb(7, 100, 206)', fontName: 'Sarabun' } },
+              legend: 'none',
+              chartArea: { top: 0, right: 0, width: '80%', height: '90%' },
               vAxis: {
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: '#222757', textShadow: 'none' },
-                textPosition: 'in'
-              },
-              chartArea: { width: '100%', height: '100%' },
-              dataOpacity: 0.5,
-              // legend: { position: 'in' },
-              // titlePosition: 'in', axisTitlesPosition: 'in',
-              hAxis: { 
-                scaleType: 'mirrorLog',
-                minValue: 0,
-                textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 14, color: 'grey' },
-                textPosition: 'in' 
-              },
-              // vAxis: { textPosition: 'in' }
+                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey', textShadow: 'none',
+                  float: 'right' },
+                },
+                hAxis: {
+                  textStyle: { fontName: 'Sarabun', bold: 0, fontSize: 12, color: 'grey' },
+                },
             }}
 
             // the event will register what was clicked and pop up a modal of the article, same as 

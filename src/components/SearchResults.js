@@ -62,17 +62,12 @@ export default class SearchResults extends Component {
 
           return (
             <Div key={i} style={styles.result} className="row">
-              {/* <Button color="info">
-                        <p><strong>{title}</strong></p>
-                      </Button>
-
-                      <p>{extract}</p> */}
               <ModalButton
                 date={this.props.date}
                 title={title}
                 extract={extract}
               />
-
+              <p style={styles.text}>{extract}</p>
             </Div>
           )
         })}
@@ -90,5 +85,9 @@ const styles = {
   },
   result: {
     width: '100%'
+  },
+  text: {
+    marginLeft: '10px',
+    fontSize: '14px'
   }
 }
