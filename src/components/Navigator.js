@@ -27,16 +27,16 @@ export default class Navigator extends React.Component {
       <div className="col-8">
         <div className="row" style={styles.linkHolder}>
           <div className="col-3">
-            <AnchorLink style={styles.navLink} href="#search" className="nav-link">Search</AnchorLink>
+            <AnchorLink offset='50' style={styles.navLink} href="#search" className="nav-link">Search</AnchorLink>
           </div>
           <div className="col-3">
-            <AnchorLink style={styles.navLink} href="#tophits" className="nav-link">Trending</AnchorLink>
+            <AnchorLink offset='50' style={styles.navLink} href="#tophits" className="nav-link">Trending</AnchorLink>
           </div>
           <div className="col-3">
-            <AnchorLink style={styles.navLink} href="#topcountries" className="nav-link">Countries</AnchorLink>
+            <AnchorLink offset='50' style={styles.navLink} href="#topcountries" className="nav-link">Countries</AnchorLink>
           </div>
           <div className="col-3">
-            <AnchorLink style={styles.navLink} href="#topeditors" className="nav-link">Editors</AnchorLink>
+            <AnchorLink offset='50' style={styles.navLink} href="#topeditors" className="nav-link">Editors</AnchorLink>
           </div>
         </div>
       </div>
