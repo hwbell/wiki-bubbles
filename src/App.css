@@ -136,9 +136,10 @@ input:-webkit-autofill:active {
 
 /* Modals */
 /* this setting prevents the jumpy shift when the scrollbar disappears on modal popup */
+/* Reactstrap Modals */
 body.modal-open {
   overflow: visible;
-  padding-right: 10px !important;
+  padding-right: 0 !important;
 }
 .modal-content {
   /* margin: 10px auto; */
@@ -147,6 +148,7 @@ body.modal-open {
   color: rgb(7, 100, 206);
 }
 .fa-times:hover {
+  cursor: pointer;
   color: grey;
 }
 .carousel-inner {

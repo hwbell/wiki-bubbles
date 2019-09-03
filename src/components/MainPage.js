@@ -192,12 +192,11 @@ export default class MainPage extends Component {
           {/* country data */}
           <TopCountries />
 
-          <Hr id="topeditors"></Hr>
+          {/* <Hr id="topeditors"></Hr>
 
-          {/* top editors */}
           <TopEdits />
 
-          <Hr></Hr>
+          <Hr></Hr> */}
 
         </div>
       </Container>
